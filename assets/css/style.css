@@ -1,0 +1,13 @@
+
+#oi {
+    font-family: 'pixel', Arial, sans-serif;
+}
+
+@font-face {
+    font-family: pixel;
+    src: url("fonts/space_invaders.ttf") ;
+  }
+  
+  div {
+    font-family: pixel;
+  }
