@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Space Invaders - Once Again</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets\css\style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="assets\css\style.css"> 
+
 </head>
     
 <body>
-<div id="stars"></div>
-            
+<div id="stars"></div>       
 
     <div class="app container">
-        <div class="menu bounceIn border rounded p-4" style="position: absolute;">
+        <div class="menu bounceIn rounded p-4" style="position: absolute;">
             <div class="row">          
                 <img class="menu-logo mx-auto" src="assets\img\logo.png" alt="Snake logo" style="height:18em;">
                 <!-- <h1 class="mx-auto">Snake</h1> -->
@@ -32,9 +31,9 @@
                             <div class="row">
                                 <div class="mx-auto">
                                     <p class="end-score"></p>
-                                    <button id="but1" data-difficulty="75" class="option active mr-1 rounded easy">Easy</button>
-                                    <button id="but2" data-difficulty="50" class="option ml-1 rounded medium">Medium</button>
-                                    <button id="but3" data-difficulty="50" class="option ml-1 rounded hard">Hard</button>
+                                    <button id="but1" class="option active mr-1 rounded easy">Easy</button>
+                                    <button id="but2" class="option ml-1 rounded medium">Medium</button>
+                                    <button id="but3" class="option ml-1 rounded hard">Hard</button>
                                 </div>
                             </div>
                         </div>
@@ -46,9 +45,10 @@
             </div>
         </div>
         <canvas class="canvas"></canvas>
-
-        <div class="score">0</div>
+        <div class="grid"></div>
+        <div class="results">0</div>
     </div>
-
+    <script src="assets\js\jogo.js"></script>
+    <script src="assets\js\script.js"></script>
 </body>
-</htmlç>
+</html>

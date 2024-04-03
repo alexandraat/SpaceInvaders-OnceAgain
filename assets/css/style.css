@@ -18,10 +18,14 @@ html, body {
 .app .menu button.active {
   color:white;
   background: #008D9B;
-  
   border: 3px solid purple;
 }
-
+button:focus:hover {
+  /* Add your hover styles here */
+  color:white;
+  background: #008D9B;
+  border: 3px solid red;
+}
 .easy, .medium, .hard{
   font-family: inherit;
   margin-top: 1rem;  
