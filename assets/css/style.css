@@ -3,13 +3,32 @@
     src: url("fonts/dogicabold.otf") ;
 }
 
-body {
-    font-family: 'pixel', Arial, sans-serif;
-    background:rgb(11, 0, 53);
+html, body {
+    font-family: 'pixel';
     /*background: (136deg,rgb(11, 0, 53),rgb(20, 1, 96),rgb(70, 0, 120),rgb(69, 0, 96),rgb(31, 0, 45)) repeat scroll 0% 0% / 1200% 1200%;*/
     color:#fff;
-    margin: 0px;
-    overflow:hidden;
+    margin: 0px;  user-select: none;
+    -webkit-user-select:none; /* para safari*/
+    background: #020D32;
+    overflow: hidden;
+    height:100%;
+}
+
+.app .menu button:hover,
+.app .menu button.active {
+  color:white;
+  background: #008D9B;
+  
+  border: 3px solid purple;
+}
+
+.easy, .medium, .hard{
+  font-family: inherit;
+  margin-top: 1rem;  
+  color:white;
+  background: #008D9B;
+  border: 3px solid #00646E;
+  border-radius: 5%;
 }
 
 /* ESTRELAS */
@@ -86,4 +105,110 @@ body {
   content: "";
   position: absolute;
   top: 2000px;
+}
+
+/* testar */
+.app .menu {
+  width: 80em;
+  height: 40em;
+  z-index: 1;
+}
+.app .menu button {
+  padding: .5em 1em;
+  cursor: pointer;
+}
+.play-btn {
+  background: #020D32;
+}
+.app .menu .play-btn {
+  padding: .5em 1em;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  margin-top: 5rem;
+  color: white;
+  background: #020D32;
+  font-family: inherit;
+}
+
+.container{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+} 
+
+/* extra */
+
+
+a {
+  text-decoration: none;
+}
+
+.app .score {
+  right: 0;
+  bottom: 0;
+  display: none;
+  position: fixed;
+  font-size: 65px;
+  padding: .5em;
+}
+
+.app .menu h2 {
+  margin: 0;
+  font-size: 50px;
+}
+
+/* Game In Progress */
+.app.game-runing .score {
+  display: block;
+}
+.app.game-running .menu {
+  display: none;
+}
+/* Game Over */
+.app.game-over canvas {
+  opacity: 0.3;
+}
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+.bounceIn {
+  animation-duration: 0.75s;
+  animation-name: bounceIn;
+}
+@keyframes bounceIn {
+  from, 20%, 40%, 60%, 80%, to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+  20% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  40% {
+    -webkit-transform: scale3d(0.9, 0.9, 0.9);
+    transform: scale3d(0.9, 0.9, 0.9);
+  }
+  60% {
+    opacity: 1;
+    -webkit-transform: scale3d(1.03, 1.03, 1.03);
+    transform: scale3d(1.03, 1.03, 1.03);
+  }
+  80% {
+    -webkit-transform: scale3d(0.97, 0.97, 0.97);
+    transform: scale3d(0.97, 0.97, 0.97);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
 }
