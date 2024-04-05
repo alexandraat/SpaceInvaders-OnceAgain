@@ -1,27 +1,123 @@
 document.addEventListener('DOMContentLoaded', () => {
     const playButton = document.querySelector('.play-btn');
-    
+
     playButton.addEventListener('click', startSpaceInvaders);
-   
+
     function startSpaceInvaders() {
         console.log("começou");
+        
         // Remove o menu
         const menu = document.querySelector('.menu');
         menu.style.display = 'none';
 
-        // Inicia o jogo no canvas
-        const canvas = document.querySelector('.canvas');
-        const context = canvas.getContext('2d');
+        // Adicionar event listeners para pressionar e soltar teclas
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
 
-        // Lógica do jogo Space Invaders
-        // Por exemplo:
-        // - Desenhar elementos no canvas para as naves inimigas, nave do jogador, projéteis, etc.
-        // - Adicionar eventos para mover a nave do jogador, atirar projéteis, etc.
+        // Event listener para tecla de seta para cima (para atirar)
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "ArrowUp") {
+                shoot(); // Chama a função shoot quando a tecla de seta para cima é pressionada
+            }
+        });
+
+        // Create a new canvas element
+        const canvas = document.createElement('canvas');
+        canvas.className = 'canvas';
+        document.getElementById('container').appendChild(canvas);
+        const context = canvas.getContext('2d'); //TODO:HUM n ta ser usado acho eu
+
+        // Definindo o tamanho do canvas
+        canvas.width = 800;
+        canvas.height = 600;
+
+        // Definindo variáveis do jogador
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height - 30,
+            width: 50,
+            height: 20,
+            speed: 5
+        };
+
+        // Desenha o jogador
+        function drawPlayer() {
+            context.beginPath();
+            context.rect(player.x, player.y, player.width, player.height);
+            context.fillStyle = "#0095DD";
+            context.fill();
+            context.closePath();
+        }
+
+        // Atualiza a posição do jogador
+        function updatePlayer() {
+            if (rightPressed && player.x < canvas.width - player.width) {
+                player.x += player.speed;
+            } else if (leftPressed && player.x > 0) {
+                player.x -= player.speed;
+            }
+        }
+
+        // Função principal de desenho
+        function draw() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            updatePlayer();
+            requestAnimationFrame(draw);
+        }
+
+        // Controles do jogador
+        let rightPressed = false;
+        let leftPressed = false;
+
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+
+        function keyDownHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") {
+                rightPressed = true;
+            } else if (e.key === "Left" || e.key === "ArrowLeft") {
+                leftPressed = true;
+            } else if (e.key === "ArrowUp") {
+                shoot();
+            }
+        }
+
+        function keyUpHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") {
+                rightPressed = false;
+            } else if (e.key === "Left" || e.key === "ArrowLeft") {
+                leftPressed = false;
+            }
+        }
+
+        // Inicia o loop do jogo
+        draw();
     }
 });
+function shoot() {
+    let currentLaserY = player.y; // Posição inicial do laser
+    let laserInterval = setInterval(moveLaser, 10);
+
+    function moveLaser() {
+        context.clearRect(player.x + player.width / 2 - 1, currentLaserY, 2, 10); // Limpar posição anterior do laser
+        currentLaserY -= 5; // Movimentar o laser para cima
+        context.beginPath();
+        context.rect(player.x + player.width / 2 - 1, currentLaserY, 2, 10);
+        context.fillStyle = "#FF0000";
+        context.fill();
+        context.closePath();
+
+        // Verificar se o laser saiu da tela
+        if (currentLaserY <= 0) {
+            clearInterval(laserInterval);
+            context.clearRect(player.x + player.width / 2 - 1, 0, 2, player.y); // Limpar o laser
+        }
+    }
+}
 
 //teste -------------------------
-
+/**
 const grid = document.querySelector(".grid")
 const resultDisplay = document.querySelector(".results")
 let currentShooterIndex = 202
@@ -54,7 +150,7 @@ function draw() {
     }
 }
 
-draw()
+draw();
 
 squares[currentShooterIndex].classList.add("shooter")
 
@@ -149,3 +245,4 @@ function shoot(e) {
 }
 
 document.addEventListener('keydown', shoot)
+ */

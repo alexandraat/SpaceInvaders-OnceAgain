@@ -14,7 +14,9 @@ html, body {
     overflow: hidden;
     height:100%;
 }
-
+.canvas{
+  border: 3px solid #008D9B;
+}
 .app .menu button:hover,
 .app .menu button.active {
   color:white;
