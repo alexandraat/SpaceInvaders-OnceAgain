@@ -10,17 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const menu = document.querySelector('.menu');
         menu.style.display = 'none';
 
-        // Adicionar event listeners para pressionar e soltar teclas
-        document.addEventListener("keydown", keyDownHandler, false);
-        document.addEventListener("keyup", keyUpHandler, false);
-
-        // Event listener para tecla de seta para cima (para atirar)
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "ArrowUp") {
-                shoot(); // Chama a função shoot quando a tecla de seta para cima é pressionada
-            }
-        });
-
         // Create a new canvas element
         const canvas = document.createElement('canvas');
         canvas.className = 'canvas';
@@ -72,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
+        
 
         function keyDownHandler(e) {
             if (e.key === "Right" || e.key === "ArrowRight") {
@@ -79,7 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (e.key === "Left" || e.key === "ArrowLeft") {
                 leftPressed = true;
             } else if (e.key === "ArrowUp") {
-                shoot();
+                console.log("Entrouuuu");
+                shoot(player,context);
             }
         }
 
@@ -95,21 +86,23 @@ document.addEventListener('DOMContentLoaded', () => {
         draw();
     }
 });
-function shoot() {
-    let currentLaserY = player.y; // Posição inicial do laser
-    let laserInterval = setInterval(moveLaser, 10);
+function shoot(player,context) {
+    let currentLaserX = player.x; // Posição inicial do laser
+    console.log("X: "+currentLaserX);
+    let laserInterval = setInterval(moveLaser(context), 10);
+    console.log("laserInterval: "+laserInterval);
 
-    function moveLaser() {
-        context.clearRect(player.x + player.width / 2 - 1, currentLaserY, 2, 10); // Limpar posição anterior do laser
-        currentLaserY -= 5; // Movimentar o laser para cima
+    function moveLaser(context) {
+        context.clearRect(player.x + player.width / 2 - 1, currentLaserX, 2, 10); // Limpar posição anterior do laser
+        currentLaserX -= 5; // Movimentar o laser para cima
         context.beginPath();
-        context.rect(player.x + player.width / 2 - 1, currentLaserY, 2, 10);
+        context.rect(player.x + player.width / 2 - 1, currentLaserX, 2, 10);
         context.fillStyle = "#FF0000";
         context.fill();
         context.closePath();
 
         // Verificar se o laser saiu da tela
-        if (currentLaserY <= 0) {
+        if (currentLaserX <= 0) {
             clearInterval(laserInterval);
             context.clearRect(player.x + player.width / 2 - 1, 0, 2, player.y); // Limpar o laser
         }

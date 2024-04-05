@@ -14,6 +14,24 @@ html, body {
     overflow: hidden;
     height:100%;
 }
+
+.invader {
+	background-color: purple;
+	border-radius: 10px;
+}
+
+.shooter {
+	background-color: green;
+}
+
+.laser {
+	background-color: orange;
+}
+
+.boom {
+	background-color: red;
+}
+
 .canvas{
   border: 3px solid #008D9B;
 }
