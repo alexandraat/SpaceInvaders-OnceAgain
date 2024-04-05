@@ -7,7 +7,8 @@ html, body {
     font-family: 'pixel';
     /*background: (136deg,rgb(11, 0, 53),rgb(20, 1, 96),rgb(70, 0, 120),rgb(69, 0, 96),rgb(31, 0, 45)) repeat scroll 0% 0% / 1200% 1200%;*/
     color:#fff;
-    margin: 0px;  user-select: none;
+    margin: 0px;  
+    user-select: none;
     -webkit-user-select:none; /* para safari*/
     background: #020D32;
     overflow: hidden;
@@ -20,11 +21,14 @@ html, body {
   background: #008D9B;
   border: 3px solid purple;
 }
+.selected{
+  border: 3px solid purple;
+}
 button:focus:hover {
   /* Add your hover styles here */
   color:white;
   background: #008D9B;
-  border: 3px solid red;
+  border: 3px solid purple;
 }
 .easy, .medium, .hard{
   font-family: inherit;
