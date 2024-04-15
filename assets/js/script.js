@@ -87,23 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Defina o tamanho e a posição inicial das barreiras
-const barrierRowCount = 4;
-const barrierColumnCount = 8;
-const barrierWidth = 50;
-const barrierHeight = 20;
-const barrierPadding = 10;
-const barrierOffsetTop = 400;
-const barrierOffsetLeft = 80;
 
-// Crie a matriz para armazenar o estado das barreiras
-const barriers = [];
-for (let c = 0; c < barrierColumnCount; c++) {
-    barriers[c] = [];
-    for (let r = 0; r < barrierRowCount; r++) {
-        barriers[c][r] = { x: 0, y: 0, status: 1 };
-    }
-}
 
 
 // Função para desenhar a linha de barreiras centralizada horizontalmente
@@ -128,6 +112,16 @@ function drawBarriers(context, canvas) {
         context.fill();
         context.closePath();
     }
+
+    // Crie a matriz para armazenar o estado das barreiras
+    const barriers = [];
+    for (let c = 0; c < barrierColumnCount; c++) {
+        barriers[c] = [];
+        for (let r = 0; r < barrierRowCount; r++) {
+            barriers[c][r] = { x: 0, y: 0, status: 1 };
+        }
+}
+
 }
 
 
