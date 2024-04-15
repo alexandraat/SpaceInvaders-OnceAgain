@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
             x: canvas.width / 2,
             y: canvas.height - 30,
             width: 50,
-            height: 20,
-            speed: 5
+            height: 10,
+            speed: 1
         };
 
         // Desenha o jogador
@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function draw() {
             context.clearRect(0, 0, canvas.width, canvas.height);
             drawPlayer();
+            drawBarriers(context,canvas);
             updatePlayer();
             requestAnimationFrame(draw);
         }
@@ -69,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (e.key === "Left" || e.key === "ArrowLeft") {
                 leftPressed = true;
             } else if (e.key === "ArrowUp") {
-                console.log("Entrouuuu");
                 shoot(player,context);
             }
         }
@@ -86,27 +86,118 @@ document.addEventListener('DOMContentLoaded', () => {
         draw();
     }
 });
-function shoot(player,context) {
-    let currentLaserX = player.x; // Posição inicial do laser
-    console.log("X: "+currentLaserX);
-    let laserInterval = setInterval(moveLaser(context), 10);
-    console.log("laserInterval: "+laserInterval);
 
-    function moveLaser(context) {
-        context.clearRect(player.x + player.width / 2 - 1, currentLaserX, 2, 10); // Limpar posição anterior do laser
-        currentLaserX -= 5; // Movimentar o laser para cima
+// Defina o tamanho e a posição inicial das barreiras
+const barrierRowCount = 4;
+const barrierColumnCount = 8;
+const barrierWidth = 50;
+const barrierHeight = 20;
+const barrierPadding = 10;
+const barrierOffsetTop = 400;
+const barrierOffsetLeft = 80;
+
+// Crie a matriz para armazenar o estado das barreiras
+const barriers = [];
+for (let c = 0; c < barrierColumnCount; c++) {
+    barriers[c] = [];
+    for (let r = 0; r < barrierRowCount; r++) {
+        barriers[c][r] = { x: 0, y: 0, status: 1 };
+    }
+}
+
+
+// Função para desenhar a linha de barreiras centralizada horizontalmente
+function drawBarriers(context, canvas) {
+    const gap = 100; // Espaço entre as barreiras
+    const barrierWidth = 100; // Largura de cada barreira
+    const totalBarriers = 4; // Total de barreiras na linha
+    const totalGapWidth = gap * (totalBarriers - 1); // Largura total dos espaços entre as barreiras
+    const totalWidth = barrierWidth * totalBarriers + totalGapWidth; // Largura total do conjunto de barreiras
+
+    // Calcula a posição inicial para centralizar as barreiras
+    const initialX = (canvas.width - totalWidth) / 2;
+
+    const barrierHeight = 60; // Altura das barreiras
+    const barrierY = canvas.height - 150; // Define a posição vertical das barreiras
+
+    for (let i = 0; i < totalBarriers; i++) {
+        const barrierX = initialX + i * (barrierWidth + gap); // Calcula a posição X de cada barreira
         context.beginPath();
-        context.rect(player.x + player.width / 2 - 1, currentLaserX, 2, 10);
-        context.fillStyle = "#FF0000";
+        context.rect(barrierX, barrierY, barrierWidth, barrierHeight);
+        context.fillStyle = "#Fff000";
         context.fill();
         context.closePath();
+    }
+}
 
-        // Verificar se o laser saiu da tela
-        if (currentLaserX <= 0) {
-            clearInterval(laserInterval);
-            context.clearRect(player.x + player.width / 2 - 1, 0, 2, player.y); // Limpar o laser
+
+// Variável para controlar o tempo do último disparo
+let lastShootTime = 0;
+// Intervalo mínimo entre os disparos (em milissegundos)
+const shootInterval = 1000; // Por exemplo, 500ms (meio segundo)
+
+function shoot(player, context) {
+
+    const currentTime = Date.now();
+    if (currentTime - lastShootTime < shootInterval) {
+        // Ainda não passou tempo suficiente, então não dispara
+        return;
+    }
+
+    // Define as propriedades do laser
+    const laser = {
+        x: player.x + player.width / 2,
+        y: player.y-10, //menos o height do player
+        width: 2,
+        height: 10,
+        speed: 3,
+        color: "#FF0000", // Cor do laser (vermelho)
+        active: true // Define o laser como ativo
+    };
+
+    // Função para desenhar o laser
+    function drawLaser() {
+        context.beginPath();
+        context.rect(laser.x, laser.y, laser.width, laser.height);
+        context.fillStyle = laser.color;
+        context.fill();
+        context.closePath();
+    }
+
+    // Função para atualizar a posição do laser
+    function updateLaser() {
+        laser.y -= laser.speed; // Move o laser para cima
+         // Verifica a colisão com as barreiras
+         for (let c = 0; c < barrierColumnCount; c++) {
+            console.log("oi");
+            for (let r = 0; r < barrierRowCount; r++) {
+                console.log("oi2");
+                const barrier = barriers[c][r];
+                if (barrier.status === 1 && laser.x > barrier.x && laser.x < barrier.x + barrierWidth && laser.y > barrier.y && laser.y < barrier.y + barrierHeight) {
+                    // Marca o tiro como inativo
+                    laser.active = false;
+                    // Remove um pixel da barreira
+                    barrier.status = 0;
+                    return;
+                }
+            }
         }
     }
+
+    // Função principal de desenho do laser
+    function draw() {
+        context.clearRect(laser.x, laser.y, laser.width, laser.height);
+        drawLaser();
+        updateLaser();
+        if (laser.active) {
+            requestAnimationFrame(draw);
+        }
+    }
+
+    // Inicia o desenho do laser
+    draw();
+    console.log("shoot");
+    lastShootTime = currentTime;
 }
 
 //teste -------------------------
