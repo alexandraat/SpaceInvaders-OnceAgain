@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const playButton = document.querySelector('.play-btn');
-
+    const laserSound = new Audio('assets/sound/shoot.wav');
     playButton.addEventListener('click', startSpaceInvaders);
 
     function startSpaceInvaders() {
@@ -29,6 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
             speed: 1
         };
 
+        // Variável para controlar o tempo do último disparo
+        let lastShootTime = 0;
+        // Intervalo mínimo entre os disparos (em milissegundos)
+        const shootInterval = 1000; // Por exemplo, 500ms (meio segundo)
+
+        // Variável global para o laser
+        let laser = null;
+
         // Desenha o jogador
         function drawPlayer() {
             context.beginPath();
@@ -47,14 +55,138 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Função principal de desenho
-        function draw() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            drawPlayer();
-            drawBarriers(context,canvas);
-            updatePlayer();
-            requestAnimationFrame(draw);
+        // Variável global para armazenar a largura e altura de cada quadro de alien
+const frameWidth = 50;
+const frameHeight = 50;
+
+        // Função para atualizar o laser
+        function updateLaser(laser, index) {
+            laser.y -= laser.speed; // Move o laser para cima
+        
+            // Verifica se o laser saiu da tela
+            if (laser.y < 0) {
+                // Remove o laser da matriz de lasers
+                lasers.splice(index, 1);
+            } else {
+                // Verifica se o laser atingiu algum alien
+                const hitAlien = checkCollision(laser);
+                if (hitAlien !== -1) {
+                    // Remove o alien atingido da matriz de aliens
+                    const [r, c] = hitAlien;
+                    alienGrid[r][c] = 0;
+                    // Remove o laser da matriz de lasers
+                    lasers.splice(index, 1);
+                }
+            }
         }
+
+
+    // Função para verificar colisão entre o laser e os aliens
+    function checkCollision(laser) {
+        for (let r = 0; r < alienGrid.length; r++) {
+            for (let c = 0; c < alienGrid[r].length; c++) {
+                if (alienGrid[r][c] !== 0) {
+                    const alienX = c * (frameWidth + 10) + 50;
+                    const alienY = r * (frameHeight + 10) + 50;
+                    if (
+                        laser.x < alienX + frameWidth &&
+                        laser.x + laser.width > alienX &&
+                        laser.y < alienY + frameHeight &&
+                        laser.y + laser.height > alienY
+                    ) {
+                        const alienType = alienGrid[r][c];
+                        let scoreToAdd = 0;
+                        // Determina o valor a ser adicionado ao score com base no tipo de alien atingido
+                        if (alienType === 1) {
+                            scoreToAdd = 10; // Tipo Small
+                        } else if (alienType === 2) {
+                            scoreToAdd = 20; // Tipo Medium
+                        } else if (alienType === 3) {
+                            scoreToAdd = 40; // Tipo Large
+                        }
+                        // Adiciona o valor ao resultado
+                        const divConteudo = document.querySelector('.results');
+                        let conteudo = parseInt(divConteudo.innerHTML); // Converte o conteúdo atual para um número
+                        console.log("conteudo:", conteudo); // Isso irá imprimir o conteúdo da div com a classe 'sua-classe'
+
+                        console.log("scoretoadd:", scoreToAdd);
+                        conteudo += parseInt(scoreToAdd); // Converte scoreToAdd para um número e adiciona ao conteúdo atual
+                        divConteudo.innerHTML = conteudo;
+
+                        // Remove o alien atingido da matriz de aliens
+                        alienGrid[r][c] = 0;
+                        // Retorna a posição do alien atingido
+                        return [r, c];
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+        
+        // Carregar as imagens dos aliens
+        const alienImages = [];
+        const imagePaths = ["assets/img/small.gif", "assets/img/medium.gif", "assets/img/large.gif"];
+        imagePaths.forEach(path => {
+            const image = new Image();
+            image.src = path;
+            alienImages.push(image);
+        });
+
+        // Definir as configurações dos aliens
+        const alienWidth = 50;
+        const alienHeight = 50;
+        const alienPadding = 10;
+        const alienOffsetTop = 50;
+        const alienOffsetLeft = 50;
+        
+        // Função para desenhar os aliens com imagens
+        function drawAliensWithImages(context) {
+            for (let r = 0; r < alienGrid.length; r++) {
+                for (let c = 0; c < alienGrid[r].length; c++) {
+                    const alienType = alienGrid[r][c];
+                    if (alienType !== 0) {
+                        const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
+                        const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
+                        context.drawImage(alienImages[alienType - 1], alienX, alienY, alienWidth, alienHeight);
+                    }
+                }
+            }
+        }
+
+        // Definir a matriz para os aliens
+        const alienGrid = [
+            [3, 3, 3, 3, 3, 3,3],
+            [2, 2, 2, 2, 2, 2,2],
+            [1,1, 1, 1, 1, 1,1],
+            [1, 1, 1, 1, 1, 1,1]
+        ];
+        
+    // Definir a variável lasers como uma matriz vazia no escopo global
+    const lasers = [];
+
+    // Função principal de desenho
+    function draw() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawPlayer();
+        drawAliensWithImages(context);
+        updatePlayer();
+
+        // Verifica se existem lasers na matriz
+        if (lasers.length > 0) {
+            // Desenha e atualiza todos os lasers
+            lasers.forEach((laser, index) => {
+                if (laser.active) {
+                    context.fillStyle = laser.color;
+                    context.fillRect(laser.x, laser.y, laser.width, laser.height);
+                    updateLaser(laser, index);
+                }
+            });
+        }
+        requestAnimationFrame(draw);
+    }
+
 
         // Controles do jogador
         let rightPressed = false;
@@ -63,14 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
         
-
         function keyDownHandler(e) {
             if (e.key === "Right" || e.key === "ArrowRight") {
                 rightPressed = true;
             } else if (e.key === "Left" || e.key === "ArrowLeft") {
                 leftPressed = true;
             } else if (e.key === "ArrowUp") {
-                shoot(player,context);
+                shoot(player, context);
             }
         }
 
@@ -84,243 +215,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Inicia o loop do jogo
         draw();
+
+
+    // Função para disparar o laser
+    function shoot(player, context) {
+        const currentTime = Date.now();
+        if (currentTime - lastShootTime < shootInterval) {
+            // Ainda não passou tempo suficiente, então não dispara
+            return;
+        }
+        laserSound.play();
+        // Define as propriedades do laser
+        const laser = {
+            x: player.x + player.width / 2,
+            y: player.y - 10,
+            width: 2,
+            height: 10,
+            speed: 3,
+            color: "#FF0000", // Cor do laser (vermelho)
+            active: true // Define o laser como ativo
+        };
+
+        // Adiciona o laser à matriz de lasers
+        lasers.push(laser);
+
+        // Atualiza o tempo do último disparo
+        lastShootTime = currentTime;
+    }
+
     }
 });
-
-
-
-
-// Função para desenhar a linha de barreiras centralizada horizontalmente
-function drawBarriers(context, canvas) {
-    const gap = 100; // Espaço entre as barreiras
-    const barrierWidth = 100; // Largura de cada barreira
-    const totalBarriers = 4; // Total de barreiras na linha
-    const totalGapWidth = gap * (totalBarriers - 1); // Largura total dos espaços entre as barreiras
-    const totalWidth = barrierWidth * totalBarriers + totalGapWidth; // Largura total do conjunto de barreiras
-
-    // Calcula a posição inicial para centralizar as barreiras
-    const initialX = (canvas.width - totalWidth) / 2;
-
-    const barrierHeight = 60; // Altura das barreiras
-    const barrierY = canvas.height - 150; // Define a posição vertical das barreiras
-
-    for (let i = 0; i < totalBarriers; i++) {
-        const barrierX = initialX + i * (barrierWidth + gap); // Calcula a posição X de cada barreira
-        context.beginPath();
-        context.rect(barrierX, barrierY, barrierWidth, barrierHeight);
-        context.fillStyle = "#Fff000";
-        context.fill();
-        context.closePath();
-    }
-
-    // Crie a matriz para armazenar o estado das barreiras
-    const barriers = [];
-    for (let c = 0; c < barrierColumnCount; c++) {
-        barriers[c] = [];
-        for (let r = 0; r < barrierRowCount; r++) {
-            barriers[c][r] = { x: 0, y: 0, status: 1 };
-        }
-}
-
-}
-
-
-// Variável para controlar o tempo do último disparo
-let lastShootTime = 0;
-// Intervalo mínimo entre os disparos (em milissegundos)
-const shootInterval = 1000; // Por exemplo, 500ms (meio segundo)
-
-function shoot(player, context) {
-
-    const currentTime = Date.now();
-    if (currentTime - lastShootTime < shootInterval) {
-        // Ainda não passou tempo suficiente, então não dispara
-        return;
-    }
-
-    // Define as propriedades do laser
-    const laser = {
-        x: player.x + player.width / 2,
-        y: player.y-10, //menos o height do player
-        width: 2,
-        height: 10,
-        speed: 3,
-        color: "#FF0000", // Cor do laser (vermelho)
-        active: true // Define o laser como ativo
-    };
-
-    // Função para desenhar o laser
-    function drawLaser() {
-        context.beginPath();
-        context.rect(laser.x, laser.y, laser.width, laser.height);
-        context.fillStyle = laser.color;
-        context.fill();
-        context.closePath();
-    }
-
-    // Função para atualizar a posição do laser
-    function updateLaser() {
-        laser.y -= laser.speed; // Move o laser para cima
-         // Verifica a colisão com as barreiras
-         for (let c = 0; c < barrierColumnCount; c++) {
-            console.log("oi");
-            for (let r = 0; r < barrierRowCount; r++) {
-                console.log("oi2");
-                const barrier = barriers[c][r];
-                if (barrier.status === 1 && laser.x > barrier.x && laser.x < barrier.x + barrierWidth && laser.y > barrier.y && laser.y < barrier.y + barrierHeight) {
-                    // Marca o tiro como inativo
-                    laser.active = false;
-                    // Remove um pixel da barreira
-                    barrier.status = 0;
-                    return;
-                }
-            }
-        }
-    }
-
-    // Função principal de desenho do laser
-    function draw() {
-        context.clearRect(laser.x, laser.y, laser.width, laser.height);
-        drawLaser();
-        updateLaser();
-        if (laser.active) {
-            requestAnimationFrame(draw);
-        }
-    }
-
-    // Inicia o desenho do laser
-    draw();
-    console.log("shoot");
-    lastShootTime = currentTime;
-}
-
-//teste -------------------------
-/**
-const grid = document.querySelector(".grid")
-const resultDisplay = document.querySelector(".results")
-let currentShooterIndex = 202
-const width = 15
-const aliensRemoved = []
-let invadersId
-let isGoingRight = true
-let direction = 1
-let results = 0
-
-for (let i = 0; i < width * width; i++) {
-    const square = document.createElement("div")
-    grid.appendChild(square)
-}
-
-const squares = Array.from(document.querySelectorAll(".grid div"))
-
-
-const alienInvaders = [
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-    30, 31, 32, 33, 34, 35, 36, 37, 38, 39
-]
-
-function draw() {
-    for (let i = 0; i < alienInvaders.length; i++) {
-        if (!aliensRemoved.includes(i)) {
-            squares[alienInvaders[i]].classList.add("invader")
-        }
-    }
-}
-
-draw();
-
-squares[currentShooterIndex].classList.add("shooter")
-
-function remove() {
-    for (let i = 0; i < alienInvaders.length; i++) {
-        squares[alienInvaders[i]].classList.remove("invader")
-    }
-}
-
-function moveShooter(e) {
-    squares[currentShooterIndex].classList.remove("shooter")
-    switch (e.key) {
-        case "ArrowLeft":
-            if (currentShooterIndex % width !== 0) currentShooterIndex -= 1
-            break
-        case "ArrowRight":
-            if (currentShooterIndex % width < width - 1) currentShooterIndex += 1
-            break
-    }
-    squares[currentShooterIndex].classList.add("shooter")
-}
-
-document.addEventListener("keydown", moveShooter)
-
-function moveInvaders() {
-    const leftEdge = alienInvaders[0] % width === 0
-    const rightEdge = alienInvaders[alienInvaders.length - 1] % width === width - 1
-    remove()
-
-    if (rightEdge && isGoingRight) {
-        for (let i = 0; i < alienInvaders.length; i++) {
-            alienInvaders[i] += width + 1
-            direction = -1
-            isGoingRight = false
-        }
-    }
-
-    if (leftEdge && !isGoingRight) {
-        for (let i = 0; i < alienInvaders.length; i++) {
-            alienInvaders[i] += width - 1
-            direction = 1
-            isGoingRight = true
-        }
-    }
-
-    for (let i = 0; i < alienInvaders.length; i++) {
-        alienInvaders[i] += direction
-    }
-
-    draw()
-
-    if (squares[currentShooterIndex].classList.contains("invader")) {
-        resultDisplay.innerHTML = "GAME OVER"
-        clearInterval(invadersId)
-    }
-
-    if (aliensRemoved.length === alienInvaders.length) {
-        resultDisplay.innerHTML = "YOU WIN"
-        clearInterval(invadersId)
-    }
-}
-
-invadersId = setInterval(moveInvaders, 600)
-
-function shoot(e) {
-    let laserId
-    let currentLaserIndex = currentShooterIndex
-
-    function moveLaser() {
-        squares[currentLaserIndex].classList.remove("laser")
-        currentLaserIndex -= width
-        squares[currentLaserIndex].classList.add("laser")
-
-        if (squares[currentLaserIndex].classList.contains("invader")) {
-            squares[currentLaserIndex].classList.remove("laser")
-            squares[currentLaserIndex].classList.remove("invader")
-            squares[currentLaserIndex].classList.add("boom")
-
-            setTimeout(() => squares[currentLaserIndex].classList.remove("boom"), 300)
-            clearInterval(laserId)
-
-            const alienRemoved = alienInvaders.indexOf(currentLaserIndex)
-            aliensRemoved.push(alienRemoved)
-            results++
-            resultDisplay.innerHTML = results
-        }
-    }
-
-    if (e.key === "ArrowUp") {
-        laserId = setInterval(moveLaser, 100)
-    }
-}
-
-document.addEventListener('keydown', shoot)
- */
