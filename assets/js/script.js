@@ -162,7 +162,40 @@ const frameHeight = 50;
             [1,1, 1, 1, 1, 1,1],
             [1, 1, 1, 1, 1, 1,1]
         ];
-        
+    
+        // Função para mover os aliens
+function moveAliens() {
+    for (let r = 0; r < alienGrid.length; r++) {
+        for (let c = 0; c < alienGrid[r].length; c++) {
+            const alienType = alienGrid[r][c];
+            if (alienType !== 0) {
+                const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
+                const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
+
+                // Move os aliens para a direita
+                alienX += alienSpeedX;
+                
+                // Verifica se os aliens atingiram o lado direito do canvas
+                if (alienX + alienWidth > canvas.width) {
+                    // Move os aliens para baixo
+                    alienOffsetTop += alienSpeedY;
+                    alienSpeedX *= -1; // Inverte a direção dos aliens
+                }
+                // Verifica se os aliens atingiram o lado esquerdo do canvas
+                if (alienX < 0) {
+                    // Move os aliens para baixo
+                    alienOffsetTop += alienSpeedY;
+                    alienSpeedX *= -1; // Inverte a direção dos aliens
+                }
+
+                // Atualiza a posição dos aliens na matriz
+                alienGrid[r][c] = 0;
+                alienGrid[r + alienRows][c + alienCols] = alienType;
+            }
+        }
+    }
+}
+
     // Definir a variável lasers como uma matriz vazia no escopo global
     const lasers = [];
 
@@ -170,6 +203,7 @@ const frameHeight = 50;
     function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         drawPlayer();
+        moveAliens();
         drawAliensWithImages(context);
         updatePlayer();
 
