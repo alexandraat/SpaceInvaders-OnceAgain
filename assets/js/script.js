@@ -203,7 +203,7 @@ function moveAliens() {
     function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         drawPlayer();
-        moveAliens();
+        //moveAliens();
         drawAliensWithImages(context);
         updatePlayer();
 
