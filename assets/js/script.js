@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     const alienGrid = [
-        [3, 3, 3, 3],
-        [2, 2, 2, 2],
-        [1, 1, 1, 1],
-        [1, 1, 1, 1]
+        [3, 3, 3, 3, 3],
+        [2, 2, 2, 2, 2],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1]
     ];
 
     let alienDirection = 1; // 1 significa movimento para a direita, -1 significa movimento para a esquerda
@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const menu = document.querySelector('.menu');
         menu.style.display = 'none';
 
+        const divConteudo = document.querySelector('.results');
+        divConteudo.style.visibility = 'visible';
         // Create a new canvas element
         const canvas = document.createElement('canvas');
         canvas.className = 'canvas';
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.width = 800;
         canvas.height = 600;
 
-        setInterval(moveAliens, 1000 / 60);
+        //setInterval(moveAliens, 1000 / 60);
 
         // Definindo variáveis do jogador
         const player = {
@@ -43,54 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
             speed: 10
         };
 
-        function moveAliens() {
-            for (let r = 0; r < alienGrid.length; r++) {
-                for (let c = 0; c < alienGrid[r].length; c++) {
-                    const alienType = alienGrid[r][c];
-                    if (alienType !== 0) {
-                        const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
-                        const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
-
-                        // Verificar se o alien atingiu os limites do canvas
-                        if (alienX + alienWidth + alienSpeed > canvas.width || alienX - alienSpeed < 0) {
-                            alienDirection *= -1; // Mudar a direção
-
-                            // Mover todos os aliens para baixo
-                            for (let i = 0; i < alienGrid.length; i++) {
-                                for (let j = 0; j < alienGrid[i].length; j++) {
-                                    if (alienGrid[i][j] !== 0) {
-                                        alienGrid[i][j + 1] = alienGrid[i][j];
-                                        alienGrid[i][j] = 0;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Movimentar o alien na direção atual
-                            alienGrid[r][c] = 0;
-                            alienGrid[r][c + alienDirection] = alienType;
-                        }
-
-                        // Verificar colisão com o jogador
-                        if (alienY + alienHeight >= player.y &&
-                            alienY <= player.y + player.height &&
-                            alienX + alienWidth >= player.x &&
-                            alienX <= player.x + player.width) {
-                            //gameOver(); // Jogador atingido, fim de jogo
-                            showMessage("Game over", "Recomeçar", startSpaceInvaders);
-                        }
-                    }
-                }
-            }
-        }
 
 
         // Variável para controlar o tempo do último disparo
         let lastShootTime = 0;
         // Intervalo mínimo entre os disparos (em milissegundos)
         const shootInterval = 10; // Por exemplo, 500ms (meio segundo)
-
-        // Variável global para o laser
-        let laser = null;
 
         // Desenha o jogador
         function drawPlayer() {
@@ -159,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 scoreToAdd = 40; // Tipo Large
                             }
                             // Adiciona o valor ao resultado
-                            const divConteudo = document.querySelector('.results');
+
                             let conteudo = parseInt(divConteudo.innerHTML); // Converte o conteúdo atual para um número
                             console.log("conteudo:", conteudo); // Isso irá imprimir o conteúdo da div com a classe 'sua-classe'
 
@@ -180,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Carregar as imagens dos aliens
         const alienImages = [];
-        const imagePaths = ["assets/img/small.png", "assets/img/medium.gif", "assets/img/large.gif"];
+        const imagePaths = ["assets/img/small.png", "assets/img/medium.png", "assets/img/large.png"];
         imagePaths.forEach(path => {
             const image = new Image();
             image.src = path;
@@ -309,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (aliensLeft === 0) {
                 console.log("entrou")
                 // Exibe a mensagem "YOU WIN" e um botão para recomeçar o jogo
-                showMessage("YOU WIN", "Recomeçar", startSpaceInvaders);
+                showMessage("YOU WIN", "Return", voltarMenu);
 
                 const defaults = {
                     spread: 360,
@@ -318,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     decay: 0.94,
                     startVelocity: 20,
                     shapes: ["star"],
-                    colors: ["FFFFFF", "D8E2E2", "7A7A7A", "A8DEE9"],
+                    colors: ["008D9B", "D8E2E2", "04b8ca", "A8DEE9"],
                 };
 
                 confetti({
@@ -366,8 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', () => {
                 // Disparar a ação do botão
                 buttonAction();
-
-
             });
 
             // Adiciona o botão à div
@@ -381,7 +339,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }
 
+        function voltarMenu() {
 
+            // Add o menu
+            const menu = document.querySelector('.menu');
+            menu.style.display = 'initial';
+
+            //remover o canvas de trás
+            document.getElementById('container').removeChild(canvas);
+
+            //remover o showMessage
+            const msg = document.querySelector('.message-container');
+            document.body.removeChild(msg);
+
+            //tirar os pontos
+            divConteudo.style.visibility = 'hidden';
+            divConteudo.innerHTML = 0;
+            //TODO: VER como recomeçar o jogo
+
+        }
     }
-
 });
