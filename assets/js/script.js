@@ -4,12 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
     playButton.addEventListener('click', startSpaceInvaders);
     let gameInProgress = true;
 
+
     const alienGrid = [
-        [3],
-        [2],
-        [1],
-        [1]
+        [3, 3, 3, 3],
+        [2, 2, 2, 2],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1]
     ];
+
+    let alienDirection = 1; // 1 significa movimento para a direita, -1 significa movimento para a esquerda
+    let alienSpeed = 100; // Velocidade de movimento dos aliens
+    let alienMoveDown = false; // Flag para indicar se os aliens devem se mover para baixo
 
     function startSpaceInvaders() {
         console.log("começou");
@@ -22,11 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const canvas = document.createElement('canvas');
         canvas.className = 'canvas';
         document.getElementById('container').appendChild(canvas);
-        const context = canvas.getContext('2d'); //TODO:HUM n ta ser usado acho eu
-
+        const context = canvas.getContext('2d');
         // Definindo o tamanho do canvas
         canvas.width = 800;
         canvas.height = 600;
+
+        setInterval(moveAliens, 1000 / 60);
 
         // Definindo variáveis do jogador
         const player = {
@@ -36,6 +42,47 @@ document.addEventListener('DOMContentLoaded', () => {
             height: 10,
             speed: 10
         };
+
+        function moveAliens() {
+            for (let r = 0; r < alienGrid.length; r++) {
+                for (let c = 0; c < alienGrid[r].length; c++) {
+                    const alienType = alienGrid[r][c];
+                    if (alienType !== 0) {
+                        const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
+                        const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
+
+                        // Verificar se o alien atingiu os limites do canvas
+                        if (alienX + alienWidth + alienSpeed > canvas.width || alienX - alienSpeed < 0) {
+                            alienDirection *= -1; // Mudar a direção
+
+                            // Mover todos os aliens para baixo
+                            for (let i = 0; i < alienGrid.length; i++) {
+                                for (let j = 0; j < alienGrid[i].length; j++) {
+                                    if (alienGrid[i][j] !== 0) {
+                                        alienGrid[i][j + 1] = alienGrid[i][j];
+                                        alienGrid[i][j] = 0;
+                                    }
+                                }
+                            }
+                        } else {
+                            // Movimentar o alien na direção atual
+                            alienGrid[r][c] = 0;
+                            alienGrid[r][c + alienDirection] = alienType;
+                        }
+
+                        // Verificar colisão com o jogador
+                        if (alienY + alienHeight >= player.y &&
+                            alienY <= player.y + player.height &&
+                            alienX + alienWidth >= player.x &&
+                            alienX <= player.x + player.width) {
+                            //gameOver(); // Jogador atingido, fim de jogo
+                            showMessage("Game over", "Recomeçar", startSpaceInvaders);
+                        }
+                    }
+                }
+            }
+        }
+
 
         // Variável para controlar o tempo do último disparo
         let lastShootTime = 0;
@@ -88,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-
         // Função para verificar colisão entre o laser e os aliens
         function checkCollision(laser) {
             for (let r = 0; r < alienGrid.length; r++) {
@@ -132,10 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return -1;
         }
 
-
         // Carregar as imagens dos aliens
         const alienImages = [];
-        const imagePaths = ["assets/img/small.gif", "assets/img/medium.gif", "assets/img/large.gif"];
+        const imagePaths = ["assets/img/small.png", "assets/img/medium.gif", "assets/img/large.gif"];
         imagePaths.forEach(path => {
             const image = new Image();
             image.src = path;
@@ -149,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const alienOffsetTop = 50;
         const alienOffsetLeft = 50;
 
-        // Função para desenhar os aliens com imagens
         function drawAliensWithImages(context) {
             for (let r = 0; r < alienGrid.length; r++) {
                 for (let c = 0; c < alienGrid[r].length; c++) {
@@ -158,42 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
                         const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
                         context.drawImage(alienImages[alienType - 1], alienX, alienY, alienWidth, alienHeight);
-                    }
-                }
-            }
-        }
-
-        // Definir a matriz para os aliens
-
-
-        // Função para mover os aliens
-        function moveAliens() {
-            for (let r = 0; r < alienGrid.length; r++) {
-                for (let c = 0; c < alienGrid[r].length; c++) {
-                    const alienType = alienGrid[r][c];
-                    if (alienType !== 0) {
-                        const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
-                        const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
-
-                        // Move os aliens para a direita
-                        alienX += alienSpeedX;
-
-                        // Verifica se os aliens atingiram o lado direito do canvas
-                        if (alienX + alienWidth > canvas.width) {
-                            // Move os aliens para baixo
-                            alienOffsetTop += alienSpeedY;
-                            alienSpeedX *= -1; // Inverte a direção dos aliens
-                        }
-                        // Verifica se os aliens atingiram o lado esquerdo do canvas
-                        if (alienX < 0) {
-                            // Move os aliens para baixo
-                            alienOffsetTop += alienSpeedY;
-                            alienSpeedX *= -1; // Inverte a direção dos aliens
-                        }
-
-                        // Atualiza a posição dos aliens na matriz
-                        alienGrid[r][c] = 0;
-                        alienGrid[r + alienRows][c + alienCols] = alienType;
                     }
                 }
             }
@@ -302,6 +310,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("entrou")
                 // Exibe a mensagem "YOU WIN" e um botão para recomeçar o jogo
                 showMessage("YOU WIN", "Recomeçar", startSpaceInvaders);
+
+                const defaults = {
+                    spread: 360,
+                    ticks: 300,
+                    gravity: 0.5,
+                    decay: 0.94,
+                    startVelocity: 20,
+                    shapes: ["star"],
+                    colors: ["FFFFFF", "D8E2E2", "7A7A7A", "A8DEE9"],
+                };
+
+                confetti({
+                    ...defaults,
+                    particleCount: 50,
+                    scalar: 0.5,
+                });
+
+                confetti({
+                    ...defaults,
+                    particleCount: 25,
+                    scalar: 1,
+                });
+
+                confetti({
+                    ...defaults,
+                    particleCount: 10,
+                    scalar: 1.5,
+                });
+
+
             }
         }
 
@@ -328,24 +366,22 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', () => {
                 // Disparar a ação do botão
                 buttonAction();
-                // Limpar as serpentinas quando o botão é clicado
-                confetti.remove();
+
+
             });
 
             // Adiciona o botão à div
             messageDiv.appendChild(button);
 
+
+
             // Adiciona a div ao corpo do documento
             document.body.appendChild(messageDiv);
 
-            // Disparar as serpentinas
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+
         }
 
 
     }
+
 });
