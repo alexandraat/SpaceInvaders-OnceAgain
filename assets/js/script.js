@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const playButton = document.querySelector('.play-btn');
     const laserSound = new Audio('assets/sound/shoot.wav');
-    //TODO: const explosionSound = new Audio('assets/sound/explosion.wav');
+    const explosion = new Audio('assets/sound/explosion.wav');
+    const musica = new Audio('assets/sound/musica.mp3');
+    const win = new Audio('assets/sound/win.mp3');
+    const loss = new Audio('assets/sound/loss.mpeg');
     playButton.addEventListener('click', startSpaceInvaders);
     let gameInProgress = true;
-    //moveAliens();
 
     const alienGrid = [
         [3, 3, 3, 3, 3],
@@ -13,9 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
         [1, 1, 1, 1, 1]
     ];
 
+    let lastAlienOffsetLeft = 0; // Inicialize a última posição conhecida dos alienígenas à esquerda
+    let lastAlienOffsetTop = 20; // Inicialize a última posição conhecida dos alienígenas no topo
+
+
+    // Carregar as imagens dos alienígenas
+    const alienImages = [];
+    const imagePaths = [
+        ["assets/img/small1.png", "assets/img/small2.png"], // Imagens para alien tipo 1
+        ["assets/img/medium1.png", "assets/img/medium2.png"], // Imagens para alien tipo 2
+        ["assets/img/large1.png", "assets/img/large2.png"] // Imagens para alien tipo 3
+    ];
+
+    // Carregar imagens para cada tipo de alienígena
+    imagePaths.forEach(paths => {
+        const images = paths.map(path => {
+            const image = new Image();
+            image.src = path;
+            return image;
+        });
+        alienImages.push(images);
+    });
+
+    // Índices atuais das imagens dos alienígenas
+    const alienImageIndex = {
+        1: 0, // Índice da imagem para alien tipo 1
+        2: 0, // Índice da imagem para alien tipo 2
+        3: 0  // Índice da imagem para alien tipo 3
+    };
     function startSpaceInvaders() {
         console.log("começou");
-
+        musica.play();
         // Remove o menu
         const menu = document.querySelector('.menu');
         menu.style.display = 'none';
@@ -159,14 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let alienOffsetLeft = 0; // Posição inicial dos aliens à esquerda
         let alienOffsetTop = 20; // Posição inicial dos aliens no topo
 
-        // Carregar as imagens dos aliens
-        const alienImages = [];
-        const imagePaths = ["assets/img/small1.png", "assets/img/medium2.png", "assets/img/large2.png"];
-        imagePaths.forEach(path => {
-            const image = new Image();
-            image.src = path;
-            alienImages.push(image);
-        });
 
         function drawAliensWithImages(context) {
             for (let r = 0; r < alienGrid.length; r++) {
@@ -175,7 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (alienType !== 0) {
                         const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
                         const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
-                        context.drawImage(alienImages[alienType - 1], alienX, alienY, alienWidth, alienHeight);
+
+                        // Obter a imagem atual com base no tipo de alienígena e no índice da imagem
+                        const currentImage = alienImages[alienType - 1][alienImageIndex[alienType]];
+                        context.drawImage(currentImage, alienX, alienY, alienWidth, alienHeight);
                     }
                 }
             }
@@ -194,11 +219,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        const criticalLineY = player.y - alienHeight; // Define a linha crítica acima da posição Y do jogador
+
+
         function moveAliens() {
             // Verifica se os aliens devem se mover
             if (isAlienMoving) {
                 // Move os aliens na direção atual com a distância definida
                 alienOffsetLeft += alienDirection * alienDistance;
+
+                if (alienOffsetLeft !== lastAlienOffsetLeft || alienOffsetTop !== lastAlienOffsetTop) {
+                    // Alternar para a próxima imagem para cada tipo de alienígena
+                    for (let alienType in alienImageIndex) {
+                        const totalImages = alienImages[alienType - 1].length;
+                        alienImageIndex[alienType] = (alienImageIndex[alienType] + 1) % totalImages;
+                    }
+
+                    // Atualizar as últimas posições conhecidas dos alienígenas
+                    lastAlienOffsetLeft = alienOffsetLeft;
+                    lastAlienOffsetTop = alienOffsetTop;
+                }
 
                 // Verifica se os aliens atingiram o limite direito ou esquerdo
                 const maxX = canvas.width - (alienGrid[0].length * (alienWidth + alienPadding) - alienPadding);
@@ -288,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Desenhar a explosão na posição do alienígena destruído
                             drawExplosion(context, alienX + alienWidth / 2, alienY + alienHeight / 2);
                             // Reproduz o som de explosão
-                            //explosionSound.play();
+                            explosion.play();
 
                             // Marcar o alienígena como destruído (removendo-o da grade)
                             alienGrid[r][c] = 0;
@@ -341,6 +381,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Desenha a linha crítica (apenas para testar)
+            context.beginPath();
+            context.moveTo(0, criticalLineY); // Posição inicial da linha crítica (no topo da tela)
+            context.lineTo(canvas.width, criticalLineY); // Posição final da linha crítica (na largura total da tela)
+            context.strokeStyle = 'red'; // Cor da linha crítica
+            context.stroke();
+
             drawPlayer();
             moveAliens();
             drawAliensWithImages(context);
@@ -378,6 +426,8 @@ document.addEventListener('DOMContentLoaded', () => {
             messagePara.textContent = message;
             messageDiv.appendChild(messagePara);
 
+
+
             // Cria um botão
             const button = document.createElement('button');
             button.textContent = buttonText;
@@ -392,6 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Adiciona a div ao corpo do documento
             document.body.appendChild(messageDiv);
+            musica.pause(); // Pausar a reprodução da música
+            musica.currentTime = 0;
         }
 
         function recomecar() {
@@ -414,15 +466,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function drawExplosion(context, x, y) {
-            // Implemente sua lógica de animação de explosão aqui
-            // Por exemplo, desenhar uma série de partículas em torno da posição (x, y)
-            // Esta função pode usar propriedades globais ou parâmetros específicos para configurar a animação
-            // Exemplo simplificado:
-            context.fillStyle = "orange";
+            const radius = 20; // Raio do círculo de explosão
+            const color = "orange"; // Cor da explosão
             context.beginPath();
-            context.arc(x, y, 20, 0, Math.PI * 2);
+            context.arc(x, y, radius, 0, Math.PI * 2);
+            context.fillStyle = color;
             context.fill();
         }
+
 
 
         // Inicia o loop do jogo
