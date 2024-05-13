@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const playButton = document.querySelector('.play-btn');
     const laserSound = new Audio('assets/sound/shoot.wav');
+    //TODO: const explosionSound = new Audio('assets/sound/explosion.wav');
     playButton.addEventListener('click', startSpaceInvaders);
     let gameInProgress = true;
     //moveAliens();
@@ -153,13 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const alienHeight = 50;
         const alienPadding = 10;
         let alienDirection = 1; // Direção do movimento dos aliens: 1 para direita, -1 para esquerda
-        let alienDistance = 30; // Distância que os aliens se movem a cada passo (em pixels)
+        let alienDistance = 100; // Distância que os aliens se movem a cada passo (em pixels)
         let isAlienMoving = true; // Estado do movimento dos aliens: true para movimento, false para pausa
-        let alienSpeed = 0.2; // Velocidade de movimento dos aliens
         let alienOffsetLeft = 0; // Posição inicial dos aliens à esquerda
         let alienOffsetTop = 20; // Posição inicial dos aliens no topo
-
-
 
         // Carregar as imagens dos aliens
         const alienImages = [];
@@ -183,6 +181,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+
+        function isGameOver(posAlien, posPlayer, alienOffsetTop) {
+            //TODO:
+            // Verifica se os aliens atingiram a linha crítica
+            if (alienOffsetTop >= criticalLineY) {
+                // Os aliens alcançaram ou ultrapassaram a linha crítica (acima da linha do jogador)
+                // Exibe a mensagem de game over e encerra o jogo
+                showMessage("GAME OVER", "Recomeçar", recomecar);
+                gameInProgress = false; // Define o jogo como encerrado
+                return; // Sai da função moveAliens
+            }
+        }
+
         function moveAliens() {
             // Verifica se os aliens devem se mover
             if (isAlienMoving) {
@@ -191,17 +202,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Verifica se os aliens atingiram o limite direito ou esquerdo
                 const maxX = canvas.width - (alienGrid[0].length * (alienWidth + alienPadding) - alienPadding);
-                const minX = 20; // Limite esquerdo inicial
+                const minX = 0; // Limite esquerdo inicial
 
                 if (alienDirection === 1 && alienOffsetLeft > maxX) {
                     // Se os aliens atingirem o limite direito, mova-os para baixo e inverta a direção
                     alienOffsetLeft = maxX; // Define a posição para o limite direito
-                    alienOffsetTop += 20; // Move os aliens para baixo
+                    alienOffsetTop += 100; // Move os aliens para baixo
                     alienDirection = -1; // Inverte a direção para a esquerda
                 } else if (alienDirection === -1 && alienOffsetLeft < minX) {
                     // Se os aliens atingirem o limite esquerdo, mova-os para baixo e inverta a direção
                     alienOffsetLeft = minX; // Define a posição para o limite esquerdo
-                    alienOffsetTop += 20; // Move os aliens para baixo
+                    alienOffsetTop += 100;// Move os aliens para baixo
                     alienDirection = 1; // Inverte a direção para a direita
                 }
 
@@ -219,8 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-
-
         //*****************************************************\- Check -/***************************************************** */
 
         // Função para verificar o estado do jogo
@@ -233,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-            console.log("aliens left", aliensLeft);
+            //console.log("aliens left", aliensLeft);
             // Verifica se não há mais aliens na tela
             if (aliensLeft === 0) {
                 console.log("entrou")
@@ -249,8 +258,10 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let r = 0; r < alienGrid.length; r++) {
                 for (let c = 0; c < alienGrid[r].length; c++) {
                     if (alienGrid[r][c] !== 0) {
-                        const alienX = c * (alienWidth + 10) + 50;
-                        const alienY = r * (alienHeight + 10) + 50;
+                        const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
+                        const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
+
+                        // Verificar a colisão entre o laser e o alien
                         if (
                             laser.x < alienX + alienWidth &&
                             laser.x + laser.width > alienX &&
@@ -259,33 +270,39 @@ document.addEventListener('DOMContentLoaded', () => {
                         ) {
                             const alienType = alienGrid[r][c];
                             let scoreToAdd = 0;
-                            // Determina o valor a ser adicionado ao score com base no tipo de alien atingido
+
+                            // Adicionar pontuação com base no tipo de alienígena atingido
                             if (alienType === 1) {
-                                scoreToAdd = 10; // Tipo Small
+                                scoreToAdd = 10; // Alien pequeno
                             } else if (alienType === 2) {
-                                scoreToAdd = 20; // Tipo Medium
+                                scoreToAdd = 20; // Alien médio
                             } else if (alienType === 3) {
-                                scoreToAdd = 40; // Tipo Large
+                                scoreToAdd = 40; // Alien grande
                             }
-                            // Adiciona o valor ao resultado
 
-                            let conteudo = parseInt(divConteudo.innerHTML); // Converte o conteúdo atual para um número
-                            console.log("conteudo:", conteudo); // Isso irá imprimir o conteúdo da div com a classe 'sua-classe'
+                            // Atualizar a pontuação exibida na tela
+                            let scoreElement = document.querySelector('.results');
+                            let currentScore = parseInt(scoreElement.innerHTML);
+                            scoreElement.innerHTML = currentScore + scoreToAdd;
 
-                            console.log("scoretoadd:", scoreToAdd);
-                            conteudo += parseInt(scoreToAdd); // Converte scoreToAdd para um número e adiciona ao conteúdo atual
-                            divConteudo.innerHTML = conteudo;
+                            // Desenhar a explosão na posição do alienígena destruído
+                            drawExplosion(context, alienX + alienWidth / 2, alienY + alienHeight / 2);
+                            // Reproduz o som de explosão
+                            //explosionSound.play();
 
-                            // Remove o alien atingido da matriz de aliens
+                            // Marcar o alienígena como destruído (removendo-o da grade)
                             alienGrid[r][c] = 0;
-                            // Retorna a posição do alien atingido
+
+                            // Retornar a posição do alienígena atingido
                             return [r, c];
                         }
                     }
                 }
             }
-            return -1;
+            return -1; // Nenhuma colisão detectada
         }
+
+
 
         //*****************************************************\- Animações -/***************************************************** */
         function estrelas() {
@@ -351,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
             gameInProgress = false;
             laserSound.pause();
             laserSound.currentTime = 0;
-            console.log("ENTROU NO SHOW MESSAGE");
 
             // Cria uma nova div para a mensagem
             const messageDiv = document.createElement('div');
@@ -374,12 +390,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Adiciona o botão à div
             messageDiv.appendChild(button);
 
-
-
             // Adiciona a div ao corpo do documento
             document.body.appendChild(messageDiv);
-
-
         }
 
         function recomecar() {
@@ -399,6 +411,17 @@ document.addEventListener('DOMContentLoaded', () => {
             divConteudo.innerHTML = 0;
             //TODO: VER como recomeçar o jogo
 
+        }
+
+        function drawExplosion(context, x, y) {
+            // Implemente sua lógica de animação de explosão aqui
+            // Por exemplo, desenhar uma série de partículas em torno da posição (x, y)
+            // Esta função pode usar propriedades globais ou parâmetros específicos para configurar a animação
+            // Exemplo simplificado:
+            context.fillStyle = "orange";
+            context.beginPath();
+            context.arc(x, y, 20, 0, Math.PI * 2);
+            context.fill();
         }
 
 
