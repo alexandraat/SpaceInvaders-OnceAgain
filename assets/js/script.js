@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const playButton = document.querySelector('.play-btn');
     const laserSound = new Audio('assets/sound/shoot.wav');
     const explosion = new Audio('assets/sound/explosion.wav');
-    const musica = new Audio('assets/sound/musica.mp3');
+    const musica = new Audio('assets/sound/musica.mpeg');
     const win = new Audio('assets/sound/win.mp3');
-    const loss = new Audio('assets/sound/loss.mpeg');
+    const loss = new Audio('assets/sound/loss.mp3');
     playButton.addEventListener('click', startSpaceInvaders);
     let gameInProgress = true;
 
@@ -214,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Os aliens alcançaram ou ultrapassaram a linha crítica (acima da linha do jogador)
                 // Exibe a mensagem de game over e encerra o jogo
                 showMessage("GAME OVER", "Recomeçar", recomecar);
+                loss.play();
                 gameInProgress = false; // Define o jogo como encerrado
                 return; // Sai da função moveAliens
             }
@@ -288,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("entrou")
                 // Exibe a mensagem "YOU WIN" e um botão para recomeçar o jogo
                 showMessage("YOU WIN", "Return", recomecar);
+                win.play();
                 estrelas();
 
             }
