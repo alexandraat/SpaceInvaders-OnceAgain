@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const laserSound = new Audio('assets/sound/shoot.wav');
     playButton.addEventListener('click', startSpaceInvaders);
     let gameInProgress = true;
-
+    //moveAliens();
 
     const alienGrid = [
         [3, 3, 3, 3, 3],
@@ -11,10 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
         [1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1]
     ];
-
-    let alienDirection = 1; // 1 significa movimento para a direita, -1 significa movimento para a esquerda
-    let alienSpeed = 100; // Velocidade de movimento dos aliens
-    let alienMoveDown = false; // Flag para indicar se os aliens devem se mover para baixo
 
     function startSpaceInvaders() {
         console.log("começou");
@@ -156,12 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const alienWidth = 50;
         const alienHeight = 50;
         const alienPadding = 10;
-        const alienOffsetTop = 50;
-        const alienOffsetLeft = 50;
+        let alienDirection = 1; // Direção do movimento dos aliens: 1 para direita, -1 para esquerda
+        let alienDistance = 30; // Distância que os aliens se movem a cada passo (em pixels)
+        let isAlienMoving = true; // Estado do movimento dos aliens: true para movimento, false para pausa
+        let alienSpeed = 0.2; // Velocidade de movimento dos aliens
+        let alienOffsetLeft = 0; // Posição inicial dos aliens à esquerda
+        let alienOffsetTop = 20; // Posição inicial dos aliens no topo
+
+
 
         // Carregar as imagens dos aliens
         const alienImages = [];
-        const imagePaths = ["assets/img/small.png", "assets/img/medium.png", "assets/img/large.png"];
+        const imagePaths = ["assets/img/small1.png", "assets/img/medium2.png", "assets/img/large2.png"];
         imagePaths.forEach(path => {
             const image = new Image();
             image.src = path;
@@ -180,6 +182,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+
+        function moveAliens() {
+            // Verifica se os aliens devem se mover
+            if (isAlienMoving) {
+                // Move os aliens na direção atual com a distância definida
+                alienOffsetLeft += alienDirection * alienDistance;
+
+                // Verifica se os aliens atingiram o limite direito ou esquerdo
+                const maxX = canvas.width - (alienGrid[0].length * (alienWidth + alienPadding) - alienPadding);
+                const minX = 20; // Limite esquerdo inicial
+
+                if (alienDirection === 1 && alienOffsetLeft > maxX) {
+                    // Se os aliens atingirem o limite direito, mova-os para baixo e inverta a direção
+                    alienOffsetLeft = maxX; // Define a posição para o limite direito
+                    alienOffsetTop += 20; // Move os aliens para baixo
+                    alienDirection = -1; // Inverte a direção para a esquerda
+                } else if (alienDirection === -1 && alienOffsetLeft < minX) {
+                    // Se os aliens atingirem o limite esquerdo, mova-os para baixo e inverta a direção
+                    alienOffsetLeft = minX; // Define a posição para o limite esquerdo
+                    alienOffsetTop += 20; // Move os aliens para baixo
+                    alienDirection = 1; // Inverte a direção para a direita
+                }
+
+                // Redesenha os aliens com base na nova posição
+                drawAliensWithImages(context);
+
+                // Define um tempo de pausa após o movimento dos aliens
+                isAlienMoving = false; // Os aliens param de se mover
+
+                // Aguarda um período de pausa antes de retomar o movimento
+                setTimeout(() => {
+                    isAlienMoving = true; // Após o tempo de pausa, os aliens retomam o movimento
+                    moveAliens(); // Chama recursivamente a função moveAliens() para continuar o movimento
+                }, 1000); // Tempo de pausa em milissegundos (1 segundo)
+            }
+        }
+
+
 
         //*****************************************************\- Check -/***************************************************** */
 
@@ -278,16 +318,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        //*****************************************************\- *** -/***************************************************** */
-
-        // Função principal de desenho
+        //*****************************************************\- Função principal de desenho -/***************************************************** */
         function draw() {
             if (!gameInProgress) {
                 return;
             }
             context.clearRect(0, 0, canvas.width, canvas.height);
             drawPlayer();
-            //moveAliens();
+            moveAliens();
             drawAliensWithImages(context);
             updatePlayer();
             checkGameStatus();
@@ -305,6 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             requestAnimationFrame(draw);
         }
+
+        //*****************************************************\- Função principal de desenho -/***************************************************** */
 
         // Função para exibir uma mensagem na tela
         function showMessage(message, buttonText, buttonAction) {
