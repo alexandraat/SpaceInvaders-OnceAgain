@@ -23,18 +23,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const menu = document.querySelector('.menu');
         menu.style.display = 'none';
 
+        //Coloca os pontos visiveis
         const divConteudo = document.querySelector('.results');
         divConteudo.style.visibility = 'visible';
+
         // Create a new canvas element
         const canvas = document.createElement('canvas');
         canvas.className = 'canvas';
         document.getElementById('container').appendChild(canvas);
         const context = canvas.getContext('2d');
+
         // Definindo o tamanho do canvas
-        canvas.width = 800;
+        canvas.width = 1000;
         canvas.height = 600;
 
-        //setInterval(moveAliens, 1000 / 60);
+        //*****************************************************\- Player -/***************************************************** */
 
         // Definindo variáveis do jogador
         const player = {
@@ -44,13 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
             height: 10,
             speed: 10
         };
-
-
-
-        // Variável para controlar o tempo do último disparo
-        let lastShootTime = 0;
-        // Intervalo mínimo entre os disparos (em milissegundos)
-        const shootInterval = 10; // Por exemplo, 500ms (meio segundo)
 
         // Desenha o jogador
         function drawPlayer() {
@@ -70,9 +66,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Variável global para armazenar a largura e altura de cada quadro de alien
-        const frameWidth = 50;
-        const frameHeight = 50;
+        // Controles do jogador
+        let rightPressed = false;
+        let leftPressed = false;
+
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+
+        function keyDownHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") {
+                rightPressed = true;
+            } else if (e.key === "Left" || e.key === "ArrowLeft") {
+                leftPressed = true;
+            } else if (e.key === "ArrowUp") {
+                shoot(player, context);
+            }
+        }
+
+        function keyUpHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") {
+                rightPressed = false;
+            } else if (e.key === "Left" || e.key === "ArrowLeft") {
+                leftPressed = false;
+            }
+        }
+
+        //*****************************************************\- Laser -/***************************************************** */
+
+        // Variável para controlar o tempo do último disparo
+        let lastShootTime = 0;
+        // Intervalo mínimo entre os disparos (em milissegundos)
+        const shootInterval = 10; // Por exemplo, 500ms (meio segundo)
+        // Definir a variável lasers como uma matriz vazia no escopo global
+        const lasers = [];
 
         // Função para atualizar o laser
         function updateLaser(laser, index) {
@@ -95,17 +121,100 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Função para disparar o laser
+        function shoot(player, context) {
+            if (!gameInProgress) {
+                return;
+            }
+            const currentTime = Date.now();
+            if (currentTime - lastShootTime < shootInterval) {
+                // Ainda não passou tempo suficiente, então não dispara
+                return;
+            }
+            laserSound.play();
+            // Define as propriedades do laser
+            const laser = {
+                x: player.x + player.width / 2,
+                y: player.y - 10,
+                width: 2,
+                height: 10,
+                speed: 20,
+                color: "#FF0000", // Cor do laser (vermelho)
+                active: true // Define o laser como ativo
+            };
+
+            // Adiciona o laser à matriz de lasers
+            lasers.push(laser);
+
+            // Atualiza o tempo do último disparo
+            lastShootTime = currentTime;
+        }
+
+        //*****************************************************\- Aliens -/***************************************************** */
+
+        // Definir as configurações dos aliens
+        const alienWidth = 50;
+        const alienHeight = 50;
+        const alienPadding = 10;
+        const alienOffsetTop = 50;
+        const alienOffsetLeft = 50;
+
+        // Carregar as imagens dos aliens
+        const alienImages = [];
+        const imagePaths = ["assets/img/small.png", "assets/img/medium.png", "assets/img/large.png"];
+        imagePaths.forEach(path => {
+            const image = new Image();
+            image.src = path;
+            alienImages.push(image);
+        });
+
+        function drawAliensWithImages(context) {
+            for (let r = 0; r < alienGrid.length; r++) {
+                for (let c = 0; c < alienGrid[r].length; c++) {
+                    const alienType = alienGrid[r][c];
+                    if (alienType !== 0) {
+                        const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
+                        const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
+                        context.drawImage(alienImages[alienType - 1], alienX, alienY, alienWidth, alienHeight);
+                    }
+                }
+            }
+        }
+
+        //*****************************************************\- Check -/***************************************************** */
+
+        // Função para verificar o estado do jogo
+        function checkGameStatus() {
+            let aliensLeft = 0;
+            for (let r = 0; r < alienGrid.length; r++) {
+                for (let c = 0; c < alienGrid[r].length; c++) {
+                    if (alienGrid[r][c] !== 0) {
+                        aliensLeft++;
+                    }
+                }
+            }
+            console.log("aliens left", aliensLeft);
+            // Verifica se não há mais aliens na tela
+            if (aliensLeft === 0) {
+                console.log("entrou")
+                // Exibe a mensagem "YOU WIN" e um botão para recomeçar o jogo
+                showMessage("YOU WIN", "Return", recomecar);
+                estrelas();
+
+            }
+        }
+
         // Função para verificar colisão entre o laser e os aliens
         function checkCollision(laser) {
             for (let r = 0; r < alienGrid.length; r++) {
                 for (let c = 0; c < alienGrid[r].length; c++) {
                     if (alienGrid[r][c] !== 0) {
-                        const alienX = c * (frameWidth + 10) + 50;
-                        const alienY = r * (frameHeight + 10) + 50;
+                        const alienX = c * (alienWidth + 10) + 50;
+                        const alienY = r * (alienHeight + 10) + 50;
                         if (
-                            laser.x < alienX + frameWidth &&
+                            laser.x < alienX + alienWidth &&
                             laser.x + laser.width > alienX &&
-                            laser.y < alienY + frameHeight &&
+                            laser.y < alienY + alienHeight &&
                             laser.y + laser.height > alienY
                         ) {
                             const alienType = alienGrid[r][c];
@@ -138,37 +247,38 @@ document.addEventListener('DOMContentLoaded', () => {
             return -1;
         }
 
-        // Carregar as imagens dos aliens
-        const alienImages = [];
-        const imagePaths = ["assets/img/small.png", "assets/img/medium.png", "assets/img/large.png"];
-        imagePaths.forEach(path => {
-            const image = new Image();
-            image.src = path;
-            alienImages.push(image);
-        });
+        //*****************************************************\- Animações -/***************************************************** */
+        function estrelas() {
+            const defaults = {
+                spread: 360,
+                ticks: 300,
+                gravity: 0.5,
+                decay: 0.94,
+                startVelocity: 20,
+                shapes: ["star"],
+                colors: ["008D9B", "D8E2E2", "04b8ca", "A8DEE9"],
+            };
 
-        // Definir as configurações dos aliens
-        const alienWidth = 50;
-        const alienHeight = 50;
-        const alienPadding = 10;
-        const alienOffsetTop = 50;
-        const alienOffsetLeft = 50;
+            confetti({
+                ...defaults,
+                particleCount: 50,
+                scalar: 0.5,
+            });
 
-        function drawAliensWithImages(context) {
-            for (let r = 0; r < alienGrid.length; r++) {
-                for (let c = 0; c < alienGrid[r].length; c++) {
-                    const alienType = alienGrid[r][c];
-                    if (alienType !== 0) {
-                        const alienX = c * (alienWidth + alienPadding) + alienOffsetLeft;
-                        const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
-                        context.drawImage(alienImages[alienType - 1], alienX, alienY, alienWidth, alienHeight);
-                    }
-                }
-            }
+            confetti({
+                ...defaults,
+                particleCount: 25,
+                scalar: 1,
+            });
+
+            confetti({
+                ...defaults,
+                particleCount: 10,
+                scalar: 1.5,
+            });
         }
 
-        // Definir a variável lasers como uma matriz vazia no escopo global
-        const lasers = [];
+        //*****************************************************\- *** -/***************************************************** */
 
         // Função principal de desenho
         function draw() {
@@ -194,113 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             requestAnimationFrame(draw);
-        }
-
-
-        // Controles do jogador
-        let rightPressed = false;
-        let leftPressed = false;
-
-        document.addEventListener("keydown", keyDownHandler, false);
-        document.addEventListener("keyup", keyUpHandler, false);
-
-        function keyDownHandler(e) {
-            if (e.key === "Right" || e.key === "ArrowRight") {
-                rightPressed = true;
-            } else if (e.key === "Left" || e.key === "ArrowLeft") {
-                leftPressed = true;
-            } else if (e.key === "ArrowUp") {
-                shoot(player, context);
-            }
-        }
-
-        function keyUpHandler(e) {
-            if (e.key === "Right" || e.key === "ArrowRight") {
-                rightPressed = false;
-            } else if (e.key === "Left" || e.key === "ArrowLeft") {
-                leftPressed = false;
-            }
-        }
-
-        // Inicia o loop do jogo
-        draw();
-
-
-        // Função para disparar o laser
-        function shoot(player, context) {
-            if (!gameInProgress) {
-                return;
-            }
-            const currentTime = Date.now();
-            if (currentTime - lastShootTime < shootInterval) {
-                // Ainda não passou tempo suficiente, então não dispara
-                return;
-            }
-            laserSound.play();
-            // Define as propriedades do laser
-            const laser = {
-                x: player.x + player.width / 2,
-                y: player.y - 10,
-                width: 2,
-                height: 10,
-                speed: 20,
-                color: "#FF0000", // Cor do laser (vermelho)
-                active: true // Define o laser como ativo
-            };
-
-            // Adiciona o laser à matriz de lasers
-            lasers.push(laser);
-
-            // Atualiza o tempo do último disparo
-            lastShootTime = currentTime;
-        }
-        // Função para verificar o estado do jogo
-        function checkGameStatus() {
-            let aliensLeft = 0;
-            for (let r = 0; r < alienGrid.length; r++) {
-                for (let c = 0; c < alienGrid[r].length; c++) {
-                    if (alienGrid[r][c] !== 0) {
-                        aliensLeft++;
-                    }
-                }
-            }
-            console.log("aliens left", aliensLeft);
-            // Verifica se não há mais aliens na tela
-            if (aliensLeft === 0) {
-                console.log("entrou")
-                // Exibe a mensagem "YOU WIN" e um botão para recomeçar o jogo
-                showMessage("YOU WIN", "Return", voltarMenu);
-
-                const defaults = {
-                    spread: 360,
-                    ticks: 300,
-                    gravity: 0.5,
-                    decay: 0.94,
-                    startVelocity: 20,
-                    shapes: ["star"],
-                    colors: ["008D9B", "D8E2E2", "04b8ca", "A8DEE9"],
-                };
-
-                confetti({
-                    ...defaults,
-                    particleCount: 50,
-                    scalar: 0.5,
-                });
-
-                confetti({
-                    ...defaults,
-                    particleCount: 25,
-                    scalar: 1,
-                });
-
-                confetti({
-                    ...defaults,
-                    particleCount: 10,
-                    scalar: 1.5,
-                });
-
-
-            }
         }
 
         // Função para exibir uma mensagem na tela
@@ -339,8 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }
 
-        function voltarMenu() {
-
+        function recomecar() {
             // Add o menu
             const menu = document.querySelector('.menu');
             menu.style.display = 'initial';
@@ -358,5 +360,9 @@ document.addEventListener('DOMContentLoaded', () => {
             //TODO: VER como recomeçar o jogo
 
         }
+
+
+        // Inicia o loop do jogo
+        draw();
     }
 });
