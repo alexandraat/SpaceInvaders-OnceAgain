@@ -33,7 +33,7 @@ html, body {
 }
 
 .canvas{
-  border: 3px solid #008D9B;
+  box-shadow: 0px 15px 20px 5px rgba(0,0,0,0.5);
 }
 .app .menu button:hover,
 .app .menu button.active {
@@ -168,8 +168,6 @@ button:focus:hover {
 } 
 
 /* extra */
-
-
 a {
   text-decoration: none;
 }
@@ -278,4 +276,18 @@ a {
 
 .message-button:hover {
   background-color: #04b8ca; /* Cor verde mais escura ao passar o mouse */
+}
+
+#dificuldade {
+  position: absolute;
+  top: 30px; /* Ajuste conforme necessário */
+  left:  calc(100vw - 1200px);   /* Ajuste conforme necessário */
+  color: white;
+}
+
+#score {
+  position: absolute;
+  top: 30px; /* Ajuste conforme necessário */
+  right: calc(100vw - 1200px); /* Ajuste conforme necessário */
+  color: white;
 }

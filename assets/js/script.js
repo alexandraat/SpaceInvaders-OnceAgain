@@ -5,19 +5,72 @@ document.addEventListener('DOMContentLoaded', () => {
     const musica = new Audio('assets/sound/musica.mpeg');
     const win = new Audio('assets/sound/win.mp3');
     const loss = new Audio('assets/sound/loss.mp3');
-    playButton.addEventListener('click', startSpaceInvaders);
+    const difficultyText = document.getElementById('dificuldade');
     let gameInProgress = true;
-
-    const alienGrid = [
+    let shootInterval; // Por exemplo, 500ms (meio segundo)
+    let alienGrid = [
         [3, 3, 3, 3, 3],
         [2, 2, 2, 2, 2],
         [1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1]
     ];
+    let difficulty = 'easy';
+    difficultyText.textContent = 'Difficulty: Easy';
+
+    // Event listeners for difficulty selection
+    document.getElementById('easy').addEventListener('click', () => {
+        difficulty = 'easy';
+        difficultyText.textContent = 'Difficulty: Easy';
+        console.log('Difficulty set to easy');
+    });
+
+    document.getElementById('medium').addEventListener('click', () => {
+        difficulty = 'medium';
+        difficultyText.textContent = 'Difficulty: Medium';
+        console.log('Difficulty set to medium');
+    });
+
+    document.getElementById('hard').addEventListener('click', () => {
+        difficulty = 'hard';
+        difficultyText.textContent = 'Difficulty: Hard';
+        console.log('Difficulty set to hard');
+    });
+
+    // Function to adjust parameters based on difficulty
+    function adjustDificulty(player) {
+        switch (difficulty) {
+            case 'easy':
+                player.speed = 10;
+                //speed: 5,
+                shootInterval = 250;
+                break;
+            case 'medium':
+                player.speed = 5;
+                shootInterval = 500;
+                alienGrid = [
+                    [3, 3, 3, 3, 3, 3, 3],
+                    [2, 2, 2, 2, 2, 2, 2],
+                    [1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1]
+                ];
+                break;
+            case 'hard':
+                player.speed = 2;
+                shootInterval = 1000;
+                alienGrid = [
+                    [3, 2, 3, 2, 3, 2, 3, 2],
+                    [2, 2, 2, 2, 2, 2, 2, 2],
+                    [1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1]
+                ];
+                break;
+        }
+    }
+
+    playButton.addEventListener('click', startSpaceInvaders);
 
     let lastAlienOffsetLeft = 0; // Inicialize a última posição conhecida dos alienígenas à esquerda
     let lastAlienOffsetTop = 20; // Inicialize a última posição conhecida dos alienígenas no topo
-
 
     // Carregar as imagens dos alienígenas
     const alienImages = [];
@@ -43,16 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
         2: 0, // Índice da imagem para alien tipo 2
         3: 0  // Índice da imagem para alien tipo 3
     };
-    function startSpaceInvaders() {
-        console.log("começou");
-        musica.play();
-        // Remove o menu
-        const menu = document.querySelector('.menu');
-        menu.style.display = 'none';
 
-        //Coloca os pontos visiveis
-        const divConteudo = document.querySelector('.results');
-        divConteudo.style.visibility = 'visible';
+    function startSpaceInvaders() {
+        console.log("Game started");
+        musica.play();
 
         // Create a new canvas element
         const canvas = document.createElement('canvas');
@@ -118,12 +165,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Remove the menu
+        const menu = document.querySelector('.menu');
+        menu.style.display = 'none';
+
+        //Coloca os pontos visiveis e a dificuldade
+        const divConteudo = document.getElementById('score');
+        divConteudo.style.visibility = 'visible';
+        difficultyText.style.visibility = 'visible';
+
+
+        adjustDificulty(player);
+
         //*****************************************************\- Laser -/***************************************************** */
 
         // Variável para controlar o tempo do último disparo
         let lastShootTime = 0;
         // Intervalo mínimo entre os disparos (em milissegundos)
-        const shootInterval = 10; // Por exemplo, 500ms (meio segundo)
         // Definir a variável lasers como uma matriz vazia no escopo global
         const lasers = [];
 
@@ -154,8 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             const currentTime = Date.now();
+            console.log("shootInterval:", shootInterval);
+            console.log("currentTime - lastShootTime < shootInterval:", currentTime - lastShootTime);
             if (currentTime - lastShootTime < shootInterval) {
                 // Ainda não passou tempo suficiente, então não dispara
+                console.log("n disparou");
                 return;
             }
             laserSound.play();
@@ -163,9 +224,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const laser = {
                 x: player.x + player.width / 2,
                 y: player.y - 10,
-                width: 2,
-                height: 10,
-                speed: 20,
+                width: 3,
+                height: 15,
+                speed: 5,
                 color: "#FF0000", // Cor do laser (vermelho)
                 active: true // Define o laser como ativo
             };
@@ -176,6 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Atualiza o tempo do último disparo
             lastShootTime = currentTime;
         }
+
+
 
         //*****************************************************\- Aliens -/***************************************************** */
 
@@ -188,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let isAlienMoving = true; // Estado do movimento dos aliens: true para movimento, false para pausa
         let alienOffsetLeft = 0; // Posição inicial dos aliens à esquerda
         let alienOffsetTop = 20; // Posição inicial dos aliens no topo
-
 
         function drawAliensWithImages(context) {
             for (let r = 0; r < alienGrid.length; r++) {
@@ -206,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-
         function isGameOver(posAlien, posPlayer, alienOffsetTop) {
             //TODO:
             // Verifica se os aliens atingiram a linha crítica
@@ -221,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const criticalLineY = player.y - alienHeight; // Define a linha crítica acima da posição Y do jogador
-
 
         function moveAliens() {
             // Verifica se os aliens devem se mover
@@ -291,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 showMessage("YOU WIN", "Return", recomecar);
                 win.play();
                 estrelas();
-
             }
         }
 
@@ -323,9 +382,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
 
                             // Atualizar a pontuação exibida na tela
-                            let scoreElement = document.querySelector('.results');
-                            let currentScore = parseInt(scoreElement.innerHTML);
-                            scoreElement.innerHTML = currentScore + scoreToAdd;
+                            let currentScore = parseInt(divConteudo.innerHTML);
+                            divConteudo.innerHTML = currentScore + scoreToAdd;
 
                             // Desenhar a explosão na posição do alienígena destruído
                             drawExplosion(context, alienX + alienWidth / 2, alienY + alienHeight / 2);
