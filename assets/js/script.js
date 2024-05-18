@@ -15,24 +15,24 @@ document.addEventListener('DOMContentLoaded', () => {
         [1, 1, 1, 1, 1]
     ];
     let difficulty = 'easy';
-    difficultyText.textContent = 'Difficulty: Easy';
+    difficultyText.textContent = 'Easy';
 
     // Event listeners for difficulty selection
     document.getElementById('easy').addEventListener('click', () => {
         difficulty = 'easy';
-        difficultyText.textContent = 'Difficulty: Easy';
+        difficultyText.textContent = 'Easy';
         console.log('Difficulty set to easy');
     });
 
     document.getElementById('medium').addEventListener('click', () => {
         difficulty = 'medium';
-        difficultyText.textContent = 'Difficulty: Medium';
+        difficultyText.textContent = 'Medium';
         console.log('Difficulty set to medium');
     });
 
     document.getElementById('hard').addEventListener('click', () => {
         difficulty = 'hard';
-        difficultyText.textContent = 'Difficulty: Hard';
+        difficultyText.textContent = 'Hard';
         console.log('Difficulty set to hard');
     });
 
@@ -108,8 +108,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const context = canvas.getContext('2d');
 
         // Definindo o tamanho do canvas
-        canvas.width = 1000;
-        canvas.height = 600;
+        canvas.width = 1200;
+        canvas.height = 500;
+
+        const banner = document.createElement("div");
+        banner.classList.add("banner");
+        document.getElementById('container').appendChild(banner);
+
+        const joystick = document.createElement("div");
+        joystick.classList.add("joystick");
+        banner.appendChild(joystick); // Aqui você anexa ao elemento banner
+        const ring = document.createElement("div");
+        ring.classList.add("ring");
+        joystick.appendChild(ring); // Aqui você anexa ao elemento banner
+
+
+        const shaft = document.createElement("div");
+        shaft.classList.add("shaft");
+        joystick.appendChild(shaft); // Aqui você anexa ao elemento banner
+
+
+        const ball = document.createElement("div");
+        ball.classList.add("ball");
+        joystick.appendChild(ball); // Aqui você também anexa ao elemento banner
 
         //*****************************************************\- Player -/***************************************************** */
 
@@ -173,6 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const divConteudo = document.getElementById('score');
         divConteudo.style.visibility = 'visible';
         difficultyText.style.visibility = 'visible';
+        document.getElementById('s1').style.visibility = 'visible';
+        document.getElementById('d1').style.visibility = 'visible';
 
 
         adjustDificulty(player);
@@ -243,8 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
         //*****************************************************\- Aliens -/***************************************************** */
 
         // Definir as configurações dos aliens
-        const alienWidth = 50;
-        const alienHeight = 50;
+        const alienWidth = 30;
+        const alienHeight = 30;
         const alienPadding = 10;
         let alienDirection = 1; // Direção do movimento dos aliens: 1 para direita, -1 para esquerda
         let alienDistance = 100; // Distância que os aliens se movem a cada passo (em pixels)
@@ -268,22 +291,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        function isGameOver(posAlien, posPlayer, alienOffsetTop) {
-            //TODO:
-            // Verifica se os aliens atingiram a linha crítica
-            if (alienOffsetTop >= criticalLineY) {
-                // Os aliens alcançaram ou ultrapassaram a linha crítica (acima da linha do jogador)
-                // Exibe a mensagem de game over e encerra o jogo
-                showMessage("GAME OVER", "Recomeçar", recomecar);
-                loss.play();
-                gameInProgress = false; // Define o jogo como encerrado
-                return; // Sai da função moveAliens
-            }
-        }
-
         const criticalLineY = player.y - alienHeight; // Define a linha crítica acima da posição Y do jogador
 
         function moveAliens() {
+            if (!gameInProgress) {
+                return;
+            }
             // Verifica se os aliens devem se mover
             if (isAlienMoving) {
                 // Move os aliens na direção atual com a distância definida
@@ -335,6 +348,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Função para verificar o estado do jogo
         function checkGameStatus() {
+            for (let r = 0; r < alienGrid.length; r++) {
+                for (let c = 0; c < alienGrid[r].length; c++) {
+                    if (alienGrid[r][c] !== 0) { // Se o alienígena estiver presente
+                        const alienY = r * (alienHeight + alienPadding) + alienOffsetTop;
+                        if (alienY + alienHeight >= criticalLineY) {
+                            showMessage("GAME OVER", "Return", restart);
+                            loss.play();
+                            gameInProgress = false;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            // Verifica se todos os aliens foram destruídos (vitória do jogador)
             let aliensLeft = 0;
             for (let r = 0; r < alienGrid.length; r++) {
                 for (let c = 0; c < alienGrid[r].length; c++) {
@@ -343,15 +371,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-            //console.log("aliens left", aliensLeft);
-            // Verifica se não há mais aliens na tela
             if (aliensLeft === 0) {
-                console.log("entrou")
-                // Exibe a mensagem "YOU WIN" e um botão para recomeçar o jogo
-                showMessage("YOU WIN", "Return", recomecar);
+                showMessage("YOU WIN", "Return", restart);
                 win.play();
                 estrelas();
+                gameInProgress = false;
+                return true;
             }
+            return false;
         }
 
         // Função para verificar colisão entre o laser e os aliens
@@ -442,13 +469,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             context.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Desenha a linha crítica (apenas para testar)
-            context.beginPath();
-            context.moveTo(0, criticalLineY); // Posição inicial da linha crítica (no topo da tela)
-            context.lineTo(canvas.width, criticalLineY); // Posição final da linha crítica (na largura total da tela)
-            context.strokeStyle = 'red'; // Cor da linha crítica
-            context.stroke();
-
             drawPlayer();
             moveAliens();
             drawAliensWithImages(context);
@@ -486,8 +506,6 @@ document.addEventListener('DOMContentLoaded', () => {
             messagePara.textContent = message;
             messageDiv.appendChild(messagePara);
 
-
-
             // Cria um botão
             const button = document.createElement('button');
             button.textContent = buttonText;
@@ -506,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
             musica.currentTime = 0;
         }
 
-        function recomecar() {
+        function restart() {
             // Add o menu
             const menu = document.querySelector('.menu');
             menu.style.display = 'initial';
@@ -521,8 +539,43 @@ document.addEventListener('DOMContentLoaded', () => {
             //tirar os pontos
             divConteudo.style.visibility = 'hidden';
             divConteudo.innerHTML = 0;
+
+            divConteudo.style.visibility = 'hidden';
+            difficultyText.style.visibility = 'hidden';
+            banner.style.visibility = 'hidden';
+            document.getElementById('s1').style.visibility = 'hidden';
+            document.getElementById('d1').style.visibility = 'hidden';
             //TODO: VER como recomeçar o jogo
 
+            // Reset alien grid
+            alienGrid = [
+                [3, 3, 3, 3, 3],
+                [2, 2, 2, 2, 2],
+                [1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1]
+            ];
+
+            // Reset player position and other variables
+            player.x = canvas.width / 2;
+            player.y = canvas.height - 30;
+            gameInProgress = true;
+            // Reset score and other elements as needed
+            divConteudo.innerHTML = 0; // Reset score to 0
+
+            // Clear lasers
+            lasers.length = 0;
+
+            // Reset alien movement variables
+            alienOffsetLeft = 0;
+            alienOffsetTop = 20;
+            alienDirection = 1;
+            isAlienMoving = true;
+            lastAlienOffsetLeft = 0;
+            lastAlienOffsetTop = 20;
+
+            // Call functions to redraw the game elements
+            drawAliensWithImages(context);
+            drawPlayer();
         }
 
         function drawExplosion(context, x, y) {
@@ -533,9 +586,6 @@ document.addEventListener('DOMContentLoaded', () => {
             context.fillStyle = color;
             context.fill();
         }
-
-
-
         // Inicia o loop do jogo
         draw();
     }
