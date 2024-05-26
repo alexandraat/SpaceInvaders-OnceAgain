@@ -1,7 +1,7 @@
 // Get references to the buttons
-var button1 = document.getElementById("but1");
-var button2 = document.getElementById("but2");
-var button3 = document.getElementById("but3");
+var button1 = document.getElementById("easy");
+var button2 = document.getElementById("medium");
+var button3 = document.getElementById("hard");
 
 // Default border color for buttons when not selected
 var defaultBorderColor = "#00646E";
@@ -82,3 +82,12 @@ button3.addEventListener("mouseleave", function () {
         button3.style.border = "3px solid " + defaultBorderColor;
     }
 });
+
+function selectButton(button) {
+    // Remove a classe 'selected' de todos os botões
+    const buttons = document.querySelectorAll('.tema');
+    buttons.forEach(btn => btn.classList.remove('selected'));
+
+    // Adiciona a classe 'selected' ao botão clicado
+    button.classList.add('selected');
+}

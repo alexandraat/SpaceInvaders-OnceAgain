@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    let isPinkThemeActive = false;
     const playButton = document.querySelector('.play-btn');
     const laserSound = new Audio('assets/sound/shoot.wav');
     const explosion = new Audio('assets/sound/explosion.wav');
@@ -74,21 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Carregar as imagens dos alienígenas
     const alienImages = [];
-    const imagePaths = [
-        ["assets/img/small1.png", "assets/img/small2.png"], // Imagens para alien tipo 1
-        ["assets/img/medium1.png", "assets/img/medium2.png"], // Imagens para alien tipo 2
-        ["assets/img/large1.png", "assets/img/large2.png"] // Imagens para alien tipo 3
-    ];
-
-    // Carregar imagens para cada tipo de alienígena
-    imagePaths.forEach(paths => {
-        const images = paths.map(path => {
-            const image = new Image();
-            image.src = path;
-            return image;
-        });
-        alienImages.push(images);
-    });
+    var pinkButton = document.getElementById("pink");
+    var classicButton = document.getElementById("classic");
 
     // Índices atuais das imagens dos alienígenas
     const alienImageIndex = {
@@ -98,9 +86,46 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function startSpaceInvaders() {
+        //console.log("imagepaths1:", imagePaths);
+        let imagePaths = [];
+        // Verifica se o botão tem a classe 'selected'
+        console.log("imagepaths2:", imagePaths);
+        if (pinkButton.classList.contains("selected")) {
+            // Botão está selecionado
+            isPinkThemeActive = true;
+            console.log("O botão pink está selecionado.");
+            console.log("Classe 'selected' está presente: ", pinkButton.classList.contains("selected"));
+            imagePaths = [
+                ["assets/img/small1rosa.png", "assets/img/small2rosa.png"], // Imagens para alien tipo 1
+                ["assets/img/medium1rosa.png", "assets/img/medium2rosa.png"], // Imagens para alien tipo 2
+                ["assets/img/large1rosa.png", "assets/img/large2rosa.png"] // Imagens para alien tipo 3
+            ];
+
+        } else {
+            // Botão não está selecionado
+            console.log("O botão pink não está selecionado.");
+            imagePaths = [
+                ["assets/img/small1.png", "assets/img/small2.png"], // Imagens para alien tipo 1
+                ["assets/img/medium1.png", "assets/img/medium2.png"], // Imagens para alien tipo 2
+                ["assets/img/large1.png", "assets/img/large2.png"] // Imagens para alien tipo 3
+            ];
+
+        }
+
+        // Carregar imagens para cada tipo de alienígena
+        imagePaths.forEach(paths => {
+            const images = paths.map(path => {
+                const image = new Image();
+                image.src = path;
+                return image;
+            });
+            alienImages.push(images);
+        });
         console.log("Game started");
         musica.play();
-
+        //tirar o menu dos temas
+        const temas = document.getElementById('themes');
+        temas.style.visibility = 'hidden';
         // Create a new canvas element
         const canvas = document.createElement('canvas');
         canvas.className = 'canvas';
@@ -117,36 +142,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //*****************************************************\- Joystick -/***************************************************** */
         const joystick1 = document.createElement("div");
-        joystick1.classList.add("joystick");
+        joystick1.classList.add("joystick1");
         banner.appendChild(joystick1); // Aqui você anexa ao elemento banner
         //ring
         const ring1 = document.createElement("div");
-        ring1.classList.add("ring");
+        ring1.classList.add("ring1");
         joystick1.appendChild(ring1); // Aqui você anexa ao elemento banner
         //metal
         const shaft1 = document.createElement("div");
-        shaft1.classList.add("shaft");
+        shaft1.classList.add("shaft1");
         joystick1.appendChild(shaft1); // Aqui você anexa ao elemento banner
         //bola
         const ball1 = document.createElement("div");
-        ball1.classList.add("ball");
+        ball1.classList.add("ball1");
         joystick1.appendChild(ball1); // Aqui você também anexa ao elemento banner
 
 
         const joystick2 = document.createElement("div");
-        joystick2.classList.add("joystick");
+        joystick2.classList.add("joystick2");
         banner.appendChild(joystick2); // Aqui você anexa ao elemento banner
         //ring
         const ring2 = document.createElement("div");
-        ring2.classList.add("ring");
+        ring2.classList.add("ring2");
         joystick2.appendChild(ring2); // Aqui você anexa ao elemento banner
         //metal
         const shaft2 = document.createElement("div");
-        shaft2.classList.add("shaft");
+        shaft2.classList.add("shaft2");
         joystick2.appendChild(shaft2); // Aqui você anexa ao elemento banner
         //bola
         const ball2 = document.createElement("div");
-        ball2.classList.add("ball");
+        ball2.classList.add("ball2");
         joystick2.appendChild(ball2); // Aqui você também anexa ao elemento banner
 
         //*****************************************************\- Player -/***************************************************** */
@@ -164,7 +189,11 @@ document.addEventListener('DOMContentLoaded', () => {
         function drawPlayer() {
             context.beginPath();
             context.rect(player.x, player.y, player.width, player.height);
-            context.fillStyle = "#0095DD";
+            if (isPinkThemeActive) {
+                context.fillStyle = "#FF69B4"; // Cor rosa
+            } else {
+                context.fillStyle = "#0095DD"; // Cor padrão
+            }
             context.fill();
             context.closePath();
         }
@@ -542,9 +571,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function restart() {
+            imagePaths = [];
             // Add o menu
             const menu = document.querySelector('.menu');
             menu.style.display = 'initial';
+            //tirar o menu dos temas
+            const temas = document.getElementById('themes');
+            temas.style.visibility = 'visible';
+            if (pinkButton.classList.contains("selected")) {
+                pinkButton.classList.remove("selected");
+                classic.classList.add("selected");
+            }
 
             //remover o canvas de trás
             document.getElementById('container').removeChild(canvas);
@@ -562,7 +599,6 @@ document.addEventListener('DOMContentLoaded', () => {
             banner.style.visibility = 'hidden';
             document.getElementById('s1').style.visibility = 'hidden';
             document.getElementById('d1').style.visibility = 'hidden';
-            //TODO: VER como recomeçar o jogo
 
             // Reset alien grid
             alienGrid = [

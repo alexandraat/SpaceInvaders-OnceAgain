@@ -323,20 +323,72 @@ a {
     #7659AE 90%, 
     #7659AE 100% 
   );
-  width: 1205px;
+  width: 1210px;
   height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-left: 5px solid #7659AE;
+  border-right: 5px solid #7659AE;
 }
-.joystick {
+.joystick1 {
+  height: 120px;
+  display: flex;
+  justify-content: left;
+}
+
+/* Estilos para o eixo de metal */
+.shaft1 {
+  width: 10px;
+  margin-left: -100px;
+  height: 70px;
+  background: #999999;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 5px;
+  background: linear-gradient(180deg, #d4d4d4, #b0b0b0 20%, #a0a0a0 40%, #b0b0b0 60%, #d4d4d4 80%, #e0e0e0); /* Enhanced metallic effect */
+  box-shadow: inset 0px -5px 2px -1px rgba(0, 0, 0, 0.4)
+}
+
+/* Estilos para a bola */
+.ball1 {
+  width: 30px;
+  height: 30px;
+  margin-left: -100px;
+  background: red;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff0000, #cc0000); /* Shading for 3D effect */
+  border: 2px solid #800000; /* Dark border for depth */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);    
+  box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3), /* Inner shadow for depth */
+  2px 2px 5px rgba(0, 0, 0, 0.5); /* Outer shadow */
+}
+
+.ring1 {
+  width: 30px;
+  height: 30px;
+  background: #555;
+  margin-left: -100px;
+  border-radius: 37%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top:55px;
+  box-shadow:inset 0px -5px 5px -1px rgba(0, 0, 0, 1)
+}
+
+.joystick2 {
   height: 120px;
   display: flex;
   justify-content: center;
 }
 
 /* Estilos para o eixo de metal */
-.shaft {
+.shaft2 {
+  margin-left: 100px;
   width: 10px;
   height: 70px;
   background: #999999;
@@ -349,8 +401,9 @@ a {
 }
 
 /* Estilos para a bola */
-.ball {
+.ball2 {
   width: 30px;
+  margin-left: 100px;
   height: 30px;
   background: red;
   border-radius: 50%;
@@ -363,11 +416,36 @@ a {
   2px 2px 5px rgba(0, 0, 0, 0.5); /* Outer shadow */
 }
 
-.ring {
+.ring2 {
+  margin-left: 100px;
   width: 30px;
   height: 30px;
   background: #555;
   border-radius: 37%;
   margin-top:55px;
-  box-shadow:inset 0px -5px 5px -1px rgba(0, 0, 0, 1)
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow:inset 0px -5px 5px -1px rgba(0, 0, 0, 1);
+}
+#themes {
+  position: fixed; /* Torna o elemento fixo na tela */
+  top: 50px; /* Ajusta a distância do topo da tela */
+  right: 20px;
+  background-color: #008D9B;
+  width: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar destaque */
+  z-index: 1000; /* Certifica que o elemento está na frente de outros */
+  border-radius: 8px; 
+  padding: 20px;
+}
+.tema{
+  width: 100%;
+  border: 3px solid #008D9B;
+}
+.tema:hover{
+  border: 3px solid purple;
+}
+.selected{
+  border: 3px solid purple;
 }
