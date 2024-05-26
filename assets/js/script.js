@@ -115,22 +115,39 @@ document.addEventListener('DOMContentLoaded', () => {
         banner.classList.add("banner");
         document.getElementById('container').appendChild(banner);
 
-        const joystick = document.createElement("div");
-        joystick.classList.add("joystick");
-        banner.appendChild(joystick); // Aqui você anexa ao elemento banner
-        const ring = document.createElement("div");
-        ring.classList.add("ring");
-        joystick.appendChild(ring); // Aqui você anexa ao elemento banner
+        //*****************************************************\- Joystick -/***************************************************** */
+        const joystick1 = document.createElement("div");
+        joystick1.classList.add("joystick");
+        banner.appendChild(joystick1); // Aqui você anexa ao elemento banner
+        //ring
+        const ring1 = document.createElement("div");
+        ring1.classList.add("ring");
+        joystick1.appendChild(ring1); // Aqui você anexa ao elemento banner
+        //metal
+        const shaft1 = document.createElement("div");
+        shaft1.classList.add("shaft");
+        joystick1.appendChild(shaft1); // Aqui você anexa ao elemento banner
+        //bola
+        const ball1 = document.createElement("div");
+        ball1.classList.add("ball");
+        joystick1.appendChild(ball1); // Aqui você também anexa ao elemento banner
 
 
-        const shaft = document.createElement("div");
-        shaft.classList.add("shaft");
-        joystick.appendChild(shaft); // Aqui você anexa ao elemento banner
-
-
-        const ball = document.createElement("div");
-        ball.classList.add("ball");
-        joystick.appendChild(ball); // Aqui você também anexa ao elemento banner
+        const joystick2 = document.createElement("div");
+        joystick2.classList.add("joystick");
+        banner.appendChild(joystick2); // Aqui você anexa ao elemento banner
+        //ring
+        const ring2 = document.createElement("div");
+        ring2.classList.add("ring");
+        joystick2.appendChild(ring2); // Aqui você anexa ao elemento banner
+        //metal
+        const shaft2 = document.createElement("div");
+        shaft2.classList.add("shaft");
+        joystick2.appendChild(shaft2); // Aqui você anexa ao elemento banner
+        //bola
+        const ball2 = document.createElement("div");
+        ball2.classList.add("ball");
+        joystick2.appendChild(ball2); // Aqui você também anexa ao elemento banner
 
         //*****************************************************\- Player -/***************************************************** */
 
