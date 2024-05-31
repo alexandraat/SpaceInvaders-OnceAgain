@@ -596,7 +596,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             divConteudo.style.visibility = 'hidden';
             difficultyText.style.visibility = 'hidden';
-            banner.style.visibility = 'hidden';
+
+            //remover o banner
+            document.getElementById('container').removeChild(banner);
+
             document.getElementById('s1').style.visibility = 'hidden';
             document.getElementById('d1').style.visibility = 'hidden';
 

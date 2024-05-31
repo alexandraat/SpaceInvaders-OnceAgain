@@ -48,7 +48,6 @@ html, body {
 button:focus:hover {
   /* Add your hover styles here */
   color:white;
-  background: #008D9B;
   border: 3px solid purple;
 }
 .easy, .medium, .hard{
@@ -340,7 +339,7 @@ a {
 /* Estilos para o eixo de metal */
 .shaft1 {
   width: 10px;
-  margin-left: -100px;
+  margin-left: -50px;
   height: 70px;
   background: #999999;
   position: absolute;
@@ -355,7 +354,7 @@ a {
 .ball1 {
   width: 30px;
   height: 30px;
-  margin-left: -100px;
+  margin-left: -50px;
   background: red;
   border-radius: 50%;
   background: radial-gradient(circle, #ff0000, #cc0000); /* Shading for 3D effect */
@@ -371,7 +370,7 @@ a {
   width: 30px;
   height: 30px;
   background: #555;
-  margin-left: -100px;
+  margin-left: -50px;
   border-radius: 37%;
   position: absolute;
   left: 50%;
@@ -388,7 +387,7 @@ a {
 
 /* Estilos para o eixo de metal */
 .shaft2 {
-  margin-left: 100px;
+  margin-left: 50px;
   width: 10px;
   height: 70px;
   background: #999999;
@@ -403,7 +402,7 @@ a {
 /* Estilos para a bola */
 .ball2 {
   width: 30px;
-  margin-left: 100px;
+  margin-left: 50px;
   height: 30px;
   background: red;
   border-radius: 50%;
@@ -417,7 +416,7 @@ a {
 }
 
 .ring2 {
-  margin-left: 100px;
+  margin-left: 50px;
   width: 30px;
   height: 30px;
   background: #555;
@@ -432,16 +431,18 @@ a {
   position: fixed; /* Torna o elemento fixo na tela */
   top: 50px; /* Ajusta a distância do topo da tela */
   right: 20px;
-  background-color: #008D9B;
+  background-color: #020D32;
+  box-shadow: inset 0px 0px 100px -20px  slateblue;
   width: 200px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar destaque */
   z-index: 1000; /* Certifica que o elemento está na frente de outros */
   border-radius: 8px; 
   padding: 20px;
 }
 .tema{
   width: 100%;
-  border: 3px solid #008D9B;
+  background-color: #020D32;
+  color:white;
+  border: 3px solid #020D32;
 }
 .tema:hover{
   border: 3px solid purple;
