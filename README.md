@@ -1,10 +1,10 @@
 # 🚀 Space Invaders - Once Again 👾
-* Projeto para a cadeira de metodologia projetual multimédia *
-Faculdade de Ciências & Faculdade de Belas artes da Universidade de Lisboa
+### Projeto para a cadeira de metodologia projetual multimédia
+### Faculdade de Ciências & Faculdade de Belas artes da Universidade de Lisboa
 
 Um remake moderno do clássico **Space Invaders**:
-👽 Consiste num jogo de tiro, onde os jogadores assumem o papel de um piloto encarregado de defender a Terra contra hordas de invasores extraterrestres
-👩‍🚀🛰 Ganhe pontos por cada invasor destruído e prepare-se para uma jornada emocionante através do espaço sideral! 
+- 👽 Consiste num jogo de tiro, onde os jogadores assumem o papel de um piloto encarregado de defender a Terra contra hordas de invasores extraterrestres
+- 👩‍🚀🛰 Ganhe pontos por cada invasor destruído e prepare-se para uma jornada emocionante através do espaço sideral! 
 
 
 ## 🎮 Funcionalidades
