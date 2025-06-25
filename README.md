@@ -33,10 +33,9 @@ git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
 <a href="url"><img src="./assets/img/small2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/small2rosa.png" align="left" height="48" width="48" ></a>  
 <br>
 
-### Gameover
-<a href="url"><img src="./prints/gameover.png" align="left" height="100" width="300" ></a> <br>
+<a href="url"><img src="./prints/gameover.png"  ></a> <br>  
 
-<a href="url"><img src="./prints/pink.png" align="left" height="100" width="300" ></a> <br>
+<a href="url"><img src="./prints/pink.png"  ></a> <br>  
 
-<a href="url"><img src="./prints/jogar.png" align="left" height="100" width="300"> jogar</a> 
+<a href="url"><img src="./prints/jogar.png"> jogar</a>  
 
