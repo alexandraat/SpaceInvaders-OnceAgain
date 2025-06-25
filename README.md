@@ -26,16 +26,17 @@ git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
 2️⃣ Abrir o ficheiro index.html no teu browser
 
 ## ✨ Screenshots
-<a href="url"><img src="./assets/img/logo.png" align="left" height="100" width="100" ></a> <br>
+<a href="url"><img src="./assets/img/logo.png" align="left" height="100" width="100" ></a> <br>  
 
 <a href="url"><img src="./assets/img/large2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/large2rosa.png" align="left" height="48" width="48" ></a>
 <a href="url"><img src="./assets/img/medium2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/medium2rosa.png" align="left" height="48" width="48" ></a>
-<a href="url"><img src="./assets/img/small2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/small2rosa.png" align="left" height="48" width="48" ></a>
+<a href="url"><img src="./assets/img/small2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/small2rosa.png" align="left" height="48" width="48" ></a>  
 <br>
+
 ### Gameover
-<a href="url"><img src="./prints/gameover.png" align="left" height="100" width="100" ></a> <br>
+<a href="url"><img src="./prints/gameover.png" align="left" height="100" width="300" ></a> <br>
 
-<a href="url"><img src="./prints/pink.png" align="left" height="100" width="100" ></a> <br>
+<a href="url"><img src="./prints/pink.png" align="left" height="100" width="300" ></a> <br>
 
-<a href="url"><img src="./prints/jogar.png" align="left" height="100" width="100"> jogar</a> 
+<a href="url"><img src="./prints/jogar.png" align="left" height="100" width="300"> jogar</a> 
 
