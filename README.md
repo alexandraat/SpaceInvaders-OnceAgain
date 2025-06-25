@@ -1,15 +1,13 @@
 # 🚀 Space Invaders - Once Again 👾
-Projeto para a cadeira de metodologia projetual multimédia
+* Projeto para a cadeira de metodologia projetual multimédia *
 Faculdade de Ciências & Faculdade de Belas artes da Universidade de Lisboa
 
-Um remake moderno do clássico **Space Invaders**, criado para correr no browser usando **HTML5**, **CSS3** e **JavaScript**.
-- Consiste num jogo de tiro, onde os jogadores assumem o papel de um piloto encarregado de defender a Terra contra hordas de invasores extraterrestres.👽
-- Ganhe pontos por cada invasor destruído e prepare-se para uma jornada emocionante através do espaço sideral! 👩‍🚀🛰
+Um remake moderno do clássico **Space Invaders**:
+👽 Consiste num jogo de tiro, onde os jogadores assumem o papel de um piloto encarregado de defender a Terra contra hordas de invasores extraterrestres
+👩‍🚀🛰 Ganhe pontos por cada invasor destruído e prepare-se para uma jornada emocionante através do espaço sideral! 
 
 
 ## 🎮 Funcionalidades
-
-- Jogo inspirado no clássico Space Invaders
 - Seleção de dificuldade: **Easy**, **Medium**, **Hard**
 - Escolha de tema visual: **Classic** ou **Pink**
 - Animações e efeitos, incluindo **confetti** ao ganhar 🎊
