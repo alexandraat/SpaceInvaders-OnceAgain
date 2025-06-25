@@ -2,7 +2,10 @@
 Projeto para a cadeira de metodologia projetual multimédia
 Faculdade de Ciências & Faculdade de Belas artes da Universidade de Lisboa
 
-Um remake moderno do clássico **Space Invaders**, criado para correr no browser usando **HTML5**, **CSS3**, **JavaScript** e **Bootstrap**. Este projeto combina o charme retro com um toque moderno, incluindo seleções de dificuldade e temas visuais.
+Um remake moderno do clássico **Space Invaders**, criado para correr no browser usando **HTML5**, **CSS3** e **JavaScript**.
+- Consiste num jogo de tiro, onde os jogadores assumem o papel de um piloto encarregado de defender a Terra contra hordas de invasores extraterrestres.👽
+- Ganhe pontos por cada invasor destruído e prepare-se para uma jornada emocionante através do espaço sideral! 👩‍🚀🛰
+
 
 ## 🎮 Funcionalidades
 
@@ -13,12 +16,7 @@ Um remake moderno do clássico **Space Invaders**, criado para correr no browser
 - Animações e efeitos, incluindo **confetti** ao ganhar 🎊
 
 ## 🛠 Tecnologias usadas
-
-- HTML5
-- CSS3 + Bootstrap 4
-- JavaScript (ES6)
-- jQuery
-- Google Fonts (VT323 para estilo arcade)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 
 ## 💻 Como correr o projeto
 
@@ -29,3 +27,4 @@ git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
 2️⃣ Abre o ficheiro index.html no teu browser
 
 ✨ Screenshots
+![Game over](/prints/gameover.png?raw=true "Game over screen")
