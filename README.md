@@ -12,7 +12,6 @@ Um remake moderno do clássico **Space Invaders**, criado para correr no browser
 - Jogo inspirado no clássico Space Invaders
 - Seleção de dificuldade: **Easy**, **Medium**, **Hard**
 - Escolha de tema visual: **Classic** ou **Pink**
-- Interface responsiva com **Bootstrap 4**
 - Animações e efeitos, incluindo **confetti** ao ganhar 🎊
 
 ## 🛠 Tecnologias usadas
@@ -24,7 +23,12 @@ Um remake moderno do clássico **Space Invaders**, criado para correr no browser
 ```bash
 git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
 ```
-2️⃣ Abre o ficheiro index.html no teu browser
+2️⃣ Abrir o ficheiro index.html no teu browser
 
-✨ Screenshots
+## ✨ Screenshots
+# Logo !(/assets/logo.png?raw=true "logo")
+# Enemies 
+!(/assets/large1.png?raw=true "enemy") !(/assets/large2.png?raw=true "enemy") !(/assets/medium1.png?raw=true "enemy") !(/assets/medium2.png?raw=true "enemy") !(/assets/small1.png?raw=true "enemy") !(/assets/small2.png?raw=true "enemy")
 ![Game over](/prints/gameover.png?raw=true "Game over screen")
+![jogar](/prints/jogar.png?raw=true "jogar")
+![pink](/prints/pink.png?raw=true "pink")
