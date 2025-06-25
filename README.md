@@ -26,10 +26,11 @@ git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
 2️⃣ Abrir o ficheiro index.html no teu browser
 
 ## ✨ Screenshots
-# Logo 
+### Logo 
 <a href="url"><img src="./assets/img/logo.png" align="left" height="68" width="68" ></a>
-# Enemies 
-<a href="url"><img src="./assets/img/large2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/large2rosa.png" align="left" height="48" width="48" ></a>
+
+### Enemies 
+\n<a href="url"><img src="./assets/img/large2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/large2rosa.png" align="left" height="48" width="48" ></a>
 <a href="url"><img src="./assets/img/medium2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/medium2rosa.png" align="left" height="48" width="48" ></a>
 <a href="url"><img src="./assets/img/small2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/small2rosa.png" align="left" height="48" width="48" ></a>
 
