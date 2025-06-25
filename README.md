@@ -28,7 +28,7 @@ git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
 ## ✨ Screenshots
 # Logo !(/assets/logo.png?raw=true "logo")
 # Enemies 
-!(/assets/large1.png?raw=true "enemy") !(/assets/large2.png?raw=true "enemy") !(/assets/medium1.png?raw=true "enemy") !(/assets/medium2.png?raw=true "enemy") !(/assets/small1.png?raw=true "enemy") !(/assets/small2.png?raw=true "enemy")
+![enemy](/assets/large1.png?raw=true "enemy") ![enemy](/assets/large2.png?raw=true "enemy") ![enemy](/assets/medium1.png?raw=true "enemy") ![enemy](/assets/medium2.png?raw=true "enemy") ![enemy](/assets/small1.png?raw=true "enemy") ![enemy](/assets/small2.png?raw=true "enemy")
 ![Game over](/prints/gameover.png?raw=true "Game over screen")
 ![jogar](/prints/jogar.png?raw=true "jogar")
 ![pink](/prints/pink.png?raw=true "pink")
