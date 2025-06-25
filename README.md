@@ -25,7 +25,7 @@ Um remake moderno do clássico **Space Invaders**, criado para correr no browser
 1️⃣ Clonar o repositório:
 ```bash
 git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
-
+```
 2️⃣ Abre o ficheiro index.html no teu browser
 
-📂 Estrutura principal
+✨ Screenshots
