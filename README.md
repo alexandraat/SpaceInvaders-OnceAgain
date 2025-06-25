@@ -27,14 +27,12 @@ git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
 
 ## ✨ Screenshots
 # Logo 
-![logo](/assets/img/logo.png?raw=true "logo")
-
+<a href="url"><img src="./assets/img/logo.png" align="left" height="68" width="68" ></a>
 # Enemies 
-<a href="url"><img src="./assets/img/large2.png" align="left" height="48" width="48" ></a>
-<a href="url"><img src="./assets/img/large2.png" align="left" height="48" width="48" ></a>
-<a href="url"><img src="./assets/img/large2.png" align="left" height="48" width="48" ></a>
+<a href="url"><img src="./assets/img/large2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/large2rosa.png" align="left" height="48" width="48" ></a>
+<a href="url"><img src="./assets/img/medium2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/medium2rosa.png" align="left" height="48" width="48" ></a>
+<a href="url"><img src="./assets/img/small2.png" align="left" height="48" width="48" ></a> <a href="url"><img src="./assets/img/small2rosa.png" align="left" height="48" width="48" ></a>
 
-![enemy](/assets/img/large1.png?raw=true "enemy") ![enemy](/assets/img/large2.png?raw=true "enemy") ![enemy](/assets/img/medium1.png?raw=true "enemy") ![enemy](/assets/img/medium2.png?raw=true "enemy") ![enemy](/assets/img/small1.png?raw=true "enemy") ![enemy](/assets/img/small2.png?raw=true "enemy")
 
 ![Game over](/prints/gameover.png?raw=true "Game over screen")
 ![jogar](/prints/jogar.png?raw=true "jogar")
