@@ -35,8 +35,7 @@ git clone https://github.com/alexandraat/SpaceInvaders-OnceAgain.git
 
 <a href="url"><img src="./prints/inicio.png"></a>  
 
-<a href="url"><img src="./prints/jogar.png"></a>  
-<a href="url"><img src="./prints/jogar.png"></a>  
+<a href="url"><img src="./prints/jogarr.png"></a>  
 
 <a href="url"><img src="./prints/pink.png"  ></a>  
 
